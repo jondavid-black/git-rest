@@ -1,16 +1,25 @@
-from flask import Blueprint, jsonify, request
 
+from flask import Blueprint, jsonify, request
+import os
 from ..audit import audit_repo_action
 from ..models.repository_store import RepositoryStore
 from ..schemas import BranchNameSchema
 
-branches_bp = Blueprint("branches", __name__, url_prefix="/repos/<repo_id>/branches")
-store = RepositoryStore()
+branches_bp = Blueprint("branches", __name__, url_prefix="/users/<user_id>/repos/<repo_id>/branches")
+
+def get_user_store(user_id):
+    base_dir = os.environ.get("GIT_REST_WORKDIR", "/tmp/git-rest")
+    user_dir = os.path.join(base_dir, user_id)
+    if not os.path.exists(user_dir):
+        os.makedirs(user_dir, exist_ok=True)
+    return RepositoryStore(base_dir=user_dir)
+
 
 
 @branches_bp.route("/", methods=["GET"])
 @audit_repo_action("list_branches")
-def list_branches(repo_id):
+def list_branches(user_id, repo_id):
+    store = get_user_store(user_id)
     try:
         repo = store.get_repo(repo_id)
         return jsonify([branch.dict() for branch in repo.branches])
@@ -18,9 +27,11 @@ def list_branches(repo_id):
         return jsonify({"error": str(e)}), 404
 
 
+
 @branches_bp.route("/", methods=["POST"])
 @audit_repo_action("create_branch")
-def create_branch(repo_id):
+def create_branch(user_id, repo_id):
+    store = get_user_store(user_id)
     data = request.get_json()
     schema = BranchNameSchema(**data)
     try:
@@ -40,9 +51,11 @@ def create_branch(repo_id):
         return jsonify({"error": str(e)}), 400
 
 
+
 @branches_bp.route("/<branch>", methods=["POST"])
 @audit_repo_action("switch_branch")
-def switch_branch(repo_id, branch):
+def switch_branch(user_id, repo_id, branch):
+    store = get_user_store(user_id)
     try:
         repo = store.get_repo(repo_id)
         git_repo = store._load_git_repo(repo.path)
@@ -56,9 +69,11 @@ def switch_branch(repo_id, branch):
         return jsonify({"error": str(e)}), 400
 
 
+
 @branches_bp.route("/<branch>", methods=["DELETE"])
 @audit_repo_action("delete_branch")
-def delete_branch(repo_id, branch):
+def delete_branch(user_id, repo_id, branch):
+    store = get_user_store(user_id)
     try:
         repo = store.get_repo(repo_id)
         git_repo = store._load_git_repo(repo.path)

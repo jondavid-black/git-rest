@@ -17,10 +17,23 @@ def register_error_handlers(app: Flask):
         logger.warning(f"400 Bad Request: {error}")
         return jsonify({"error": "Bad request"}), 400
 
+
     @app.errorhandler(401)
     def unauthorized(error):
         logger.warning(f"401 Unauthorized: {error}")
         return jsonify({"error": "Unauthorized"}), 401
+
+    @app.errorhandler(403)
+    def forbidden(error):
+        logger.warning(f"403 Forbidden: {error}")
+        # Optionally, import and call audit logging here
+        try:
+            from .audit import write_audit_log
+            user = getattr(getattr(error, 'user', None), 'username', 'anonymous')
+            write_audit_log(user, "unauthorized_access", target_resource="N/A", outcome="failure:403", extra={"error": str(error)})
+        except Exception:
+            pass
+        return jsonify({"error": "Forbidden"}), 403
 
     @app.errorhandler(404)
     def not_found(error):
