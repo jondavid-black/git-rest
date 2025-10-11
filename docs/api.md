@@ -76,4 +76,32 @@ Delete the specified branch from the repository.
 - 200 OK: JSON array of remaining branch objects
 - 400 Bad Request: Error message
 
+
+## Commit and Diff Endpoints
+
+### `POST /repos/{repo_id}/commit`
+Commit all staged and unstaged changes in the specified repository.
+
+**Request JSON:**
+```
+{
+	"message": "Commit message",
+	"author": "Author Name"
+}
+```
+**Response:**
+- 201 Created: JSON object of the new commit
+- 400 Bad Request: Error message
+
+### `GET /repos/{repo_id}/diff`
+Get the diff for the working tree or between two commits in the specified repository.
+
+**Query Parameters:**
+- `a`: (optional) Commit hash A
+- `b`: (optional) Commit hash B
+
+**Response:**
+- 200 OK: JSON object with `diff` string
+- 400 Bad Request: Error message
+
 See the OpenAPI spec for full request/response details and additional endpoints.

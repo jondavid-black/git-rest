@@ -11,8 +11,12 @@ def create_app():
     # Register blueprints (add as implemented)
     from .api.repos import repos_bp
     from .api.branches import branches_bp
+    from .api.commit import commit_bp
+    from .api.diff import diff_bp
     app.register_blueprint(repos_bp)
     app.register_blueprint(branches_bp)
+    app.register_blueprint(commit_bp)
+    app.register_blueprint(diff_bp)
 
     # Register auth/login endpoint
     app.add_url_rule('/login', 'login', login, methods=['POST'])
