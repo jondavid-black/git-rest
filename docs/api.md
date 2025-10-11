@@ -159,4 +159,29 @@ Download a file securely using a signed URL. Requires `expires` and `token` quer
 - 404 Not Found: Error message
 - 400 Bad Request: Error message
 
+
+## Concurrency Guarantees & Usage
+
+### Concurrent User Operations
+
+- All repository, branch, and file operations are concurrency-safe for multiple users.
+- Each user's data is isolated in a separate directory/namespace; no cross-user access is possible.
+- File-based locking ensures that concurrent actions (e.g., two users creating branches or files at the same time) are serialized per user, preventing race conditions and data corruption.
+- The system supports at least 10 concurrent users with no more than 10% increase in average operation latency (see non-functional requirements).
+
+### Audit Logging Under Concurrency
+
+- All user actions are logged to a per-user audit log file.
+- Audit log entries are written atomically, so concurrent actions are always recorded and never lost or interleaved.
+- Each log entry includes user ID, action type, resource, timestamp, and outcome.
+
+### Best Practices
+
+- For best performance, avoid long-running operations in a single request.
+- If you need to coordinate actions across multiple users, do so at the application level (not via the API).
+
+### Example: Simultaneous Repository Operations
+
+Two users can create, modify, and delete repositories, branches, and files at the same time. Each user's changes are isolated and do not affect other users.
+
 See the OpenAPI spec for full request/response details and additional endpoints.
