@@ -104,4 +104,44 @@ Get the diff for the working tree or between two commits in the specified reposi
 - 200 OK: JSON object with `diff` string
 - 400 Bad Request: Error message
 
+
+
+## File Delivery Endpoints
+
+### `GET /repos/{repo_id}/files`
+List files and directories in the repository. Optionally provide a `path` query parameter to list a subdirectory.
+
+**Query Parameters:**
+- `path`: (optional) Relative path within the repository to list (default: root).
+
+**Response:**
+- 200 OK: JSON array of file/directory entries:
+	- `path`: Relative path
+	- `type`: "file", "dir", or "symlink"
+	- `size`: File size in bytes
+	- `last_modified`: ISO8601 timestamp
+- 400 Bad Request: Error message
+
+### `GET /repos/{repo_id}/files/{file_path}`
+Get the contents of a file. If the file is small, returns the content directly. If the file is large, returns a redirect to a secure download URL.
+
+**Response:**
+- 200 OK: File content (inline)
+- 302 Found: JSON with `{ "redirect": true, "url": "..." }` for large files
+- 404 Not Found: Error message
+- 400 Bad Request: Error message
+
+### `GET /repos/{repo_id}/files/{file_path}/download`
+Download a file securely using a signed URL. Requires `expires` and `token` query parameters (provided by the redirect from the previous endpoint).
+
+**Query Parameters:**
+- `expires`: Expiry timestamp (required)
+- `token`: Secure token (required)
+
+**Response:**
+- 200 OK: File download (attachment)
+- 403 Forbidden: Invalid or expired token
+- 404 Not Found: Error message
+- 400 Bad Request: Error message
+
 See the OpenAPI spec for full request/response details and additional endpoints.
