@@ -1,8 +1,9 @@
-import pytest
-import tempfile
-import os
 import json
-from git_rest.audit import write_audit_log, audit_repo_action
+
+import pytest
+
+from git_rest.audit import audit_repo_action, write_audit_log
+
 
 def test_write_audit_log_creates_file_and_entry(tmp_path, monkeypatch):
     monkeypatch.setenv("GIT_REST_AUDIT_LOG_DIR", str(tmp_path))
@@ -23,15 +24,19 @@ def test_write_audit_log_creates_file_and_entry(tmp_path, monkeypatch):
         assert entry["outcome"] == outcome
         assert entry["foo"] == "bar"
 
+
 def test_audit_repo_action_decorator_success(monkeypatch, tmp_path):
     monkeypatch.setenv("GIT_REST_AUDIT_LOG_DIR", str(tmp_path))
     from flask import Flask
+
     app = Flask(__name__)
     calls = {}
+
     @audit_repo_action("myaction")
     def f(repo_id):
         calls["called"] = True
         return "ok", 200
+
     with app.test_request_context():
         result = f("repo42")
     assert result == ("ok", 200)
@@ -44,13 +49,17 @@ def test_audit_repo_action_decorator_success(monkeypatch, tmp_path):
         assert entry["target_resource"] == "repo:repo42"
         assert calls["called"]
 
+
 def test_audit_repo_action_decorator_failure(monkeypatch, tmp_path):
     monkeypatch.setenv("GIT_REST_AUDIT_LOG_DIR", str(tmp_path))
     from flask import Flask
+
     app = Flask(__name__)
+
     @audit_repo_action("failaction")
     def f(repo_id):
         raise ValueError("fail")
+
     with app.test_request_context():
         with pytest.raises(ValueError):
             f("repo99")

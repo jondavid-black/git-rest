@@ -13,7 +13,8 @@ USERS = {"admin": "password123"}
 
 
 def generate_token(username: str, expires_in: int = 3600):
-    from datetime import datetime, UTC
+    from datetime import UTC
+
     payload = {
         "sub": username,
         "exp": datetime.now(UTC) + timedelta(seconds=expires_in),

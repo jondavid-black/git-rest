@@ -1,7 +1,7 @@
 import pytest
-import os
-import tempfile
+
 from git_rest.filesystem import FileSystemIsolation
+
 
 def test_safe_join_and_is_safe_path(tmp_path):
     fs = FileSystemIsolation(base_dir=str(tmp_path))
@@ -13,6 +13,7 @@ def test_safe_join_and_is_safe_path(tmp_path):
     # is_safe_path
     assert fs.is_safe_path("foo.txt")
     assert not fs.is_safe_path("../../etc/passwd")
+
 
 def test_list_dir_and_exists(tmp_path):
     fs = FileSystemIsolation(base_dir=str(tmp_path))
@@ -28,6 +29,7 @@ def test_list_dir_and_exists(tmp_path):
     # dir_exists
     assert fs.dir_exists("subdir")
     assert not fs.dir_exists("nope")
+
 
 def test_acquire_lock(tmp_path):
     fs = FileSystemIsolation(base_dir=str(tmp_path))
