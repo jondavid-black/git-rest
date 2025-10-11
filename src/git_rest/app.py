@@ -9,8 +9,8 @@ def create_app():
     register_error_handlers(app)
 
     # Register blueprints (add as implemented)
-    # from .api.repos import repos_bp
-    # app.register_blueprint(repos_bp)
+    from .api.repos import repos_bp
+    app.register_blueprint(repos_bp)
 
     # Register auth/login endpoint
     app.add_url_rule('/login', 'login', login, methods=['POST'])

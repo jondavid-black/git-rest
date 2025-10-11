@@ -189,6 +189,8 @@ dependencies = [
     { name = "gunicorn" },
     { name = "pydantic" },
     { name = "pyjwt" },
+    { name = "pytest" },
+    { name = "requests" },
 ]
 
 [package.optional-dependencies]
@@ -210,7 +212,9 @@ requires-dist = [
     { name = "mkdocs-material", marker = "extra == 'dev'", specifier = ">=9.6.21" },
     { name = "pydantic", specifier = ">=2.12.0" },
     { name = "pyjwt", specifier = ">=2.10.1" },
+    { name = "pytest", specifier = ">=8.4.2" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.4.2" },
+    { name = "requests", specifier = ">=2.32.5" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.14.0" },
 ]
 provides-extras = ["dev"]
