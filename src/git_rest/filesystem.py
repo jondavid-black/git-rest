@@ -1,9 +1,7 @@
-import os
-
-
-
-import threading
 import fcntl
+import os
+import threading
+
 
 class FileSystemIsolation:
     """
@@ -12,6 +10,7 @@ class FileSystemIsolation:
     No cross-user access is possible by construction.
     Adds concurrency-safe (thread/process) locking for all repo/branch/file actions.
     """
+
     _global_lock = threading.Lock()  # fallback for in-memory lock
 
     def __init__(self, base_dir: str | None = None):
@@ -40,11 +39,13 @@ class FileSystemIsolation:
         Acquire a file-based lock for this user's namespace.
         Returns a context manager that holds the lock.
         """
+
         class LockContext:
             def __init__(self, lockfile_path, blocking):
                 self.lockfile_path = lockfile_path
                 self.blocking = blocking
                 self.lockfile = None
+
             def __enter__(self):
                 self.lockfile = open(self.lockfile_path, "r+")
                 if self.blocking:
@@ -52,16 +53,17 @@ class FileSystemIsolation:
                 else:
                     fcntl.flock(self.lockfile, fcntl.LOCK_EX | fcntl.LOCK_NB)
                 return self.lockfile
+
             def __exit__(self, exc_type, exc_val, exc_tb):
                 fcntl.flock(self.lockfile, fcntl.LOCK_UN)
                 self.lockfile.close()
+
         return LockContext(self._lockfile_path, blocking)
 
     def is_safe_path(self, path: str) -> bool:
         # Check if the given path is within the user's namespace
         abs_path = os.path.abspath(os.path.join(self.base_dir, path))
         return abs_path.startswith(self.base_dir + os.sep)
-
 
     def list_dir(self, rel_path: str = ""):
         with self._acquire_lock():
@@ -70,11 +72,9 @@ class FileSystemIsolation:
                 raise FileNotFoundError(f"Directory not found: {rel_path}")
             return os.listdir(dir_path)
 
-
     def file_exists(self, rel_path: str) -> bool:
         with self._acquire_lock():
             return os.path.isfile(self.safe_join(rel_path))
-
 
     def dir_exists(self, rel_path: str) -> bool:
         with self._acquire_lock():

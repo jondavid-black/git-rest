@@ -1,13 +1,14 @@
-
-import threading
 import logging
 import os
+import threading
+
 
 class RepoContext:
     """
     Thread-local context for the currently selected repository per user/session.
     In production, this should be tied to user/session, not just thread.
     """
+
     _local = threading.local()
 
     @classmethod

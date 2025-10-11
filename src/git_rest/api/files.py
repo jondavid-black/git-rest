@@ -8,8 +8,10 @@ from ..filesystem import FileSystemIsolation
 from ..models.repository_store import RepositoryStore
 from ..services.secure_url import SecureURLGenerator
 
+files_bp = Blueprint(
+    "files", __name__, url_prefix="/users/<user_id>/repos/<repo_id>/files"
+)
 
-files_bp = Blueprint("files", __name__, url_prefix="/users/<user_id>/repos/<repo_id>/files")
 
 def get_user_store(user_id):
     base_dir = os.environ.get("GIT_REST_WORKDIR", "/tmp/git-rest")
@@ -17,7 +19,6 @@ def get_user_store(user_id):
     if not os.path.exists(user_dir):
         os.makedirs(user_dir, exist_ok=True)
     return RepositoryStore(base_dir=user_dir)
-
 
 
 @files_bp.route("/", methods=["GET"])
@@ -49,7 +50,6 @@ def list_files(user_id, repo_id):
         return jsonify(entries)
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-
 
 
 @files_bp.route("/<path:file_path>", methods=["GET"])
@@ -89,7 +89,6 @@ def get_file_content(user_id, repo_id, file_path):
         return send_file(abs_path, as_attachment=False)
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-
 
 
 # Secure file download endpoint (verifies token)

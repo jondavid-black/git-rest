@@ -1,11 +1,12 @@
-
 import logging
-from functools import wraps
-from flask import request
-from datetime import datetime
 import os
+from datetime import datetime
+from functools import wraps
+
+from flask import request
 
 logger = logging.getLogger("git_rest.audit")
+
 
 def write_audit_log(user_id, action_type, target_resource, outcome, extra=None):
     """
@@ -28,6 +29,7 @@ def write_audit_log(user_id, action_type, target_resource, outcome, extra=None):
         entry.update(extra)
     # Write as a single line JSON for easy parsing
     import json
+
     with open(log_file, "a") as f:
         f.write(json.dumps(entry) + "\n")
     logger.info(f"[AUDIT] {entry}")
@@ -55,12 +57,20 @@ def audit_repo_action(action):
                     status = result[1]
                 elif hasattr(result, "status_code"):
                     status = result.status_code
-                outcome = "success" if (status is None or (200 <= status < 400)) else f"failure:{status}"
+                outcome = (
+                    "success"
+                    if (status is None or (200 <= status < 400))
+                    else f"failure:{status}"
+                )
             except Exception as e:
                 outcome = f"failure:{type(e).__name__}"
-                write_audit_log(user, action, target_resource, outcome, extra={"error": str(e)})
+                write_audit_log(
+                    user, action, target_resource, outcome, extra={"error": str(e)}
+                )
                 raise
             write_audit_log(user, action, target_resource, outcome)
             return result
+
         return wrapper
+
     return decorator

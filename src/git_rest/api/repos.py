@@ -1,12 +1,14 @@
+import os
 
 from flask import Blueprint, jsonify, request
-import os
+
 from ..audit import audit_repo_action
 from ..context import RepoContext
 from ..models.repository_store import RepositoryStore
 from ..schemas import RepoNameSchema
 
 repos_bp = Blueprint("repos", __name__, url_prefix="/users/<user_id>/repos")
+
 
 def get_user_store(user_id):
     # Each user's repos are stored in a separate directory: <base_dir>/<user_id>/
@@ -17,14 +19,12 @@ def get_user_store(user_id):
     return RepositoryStore(base_dir=user_dir)
 
 
-
 @repos_bp.route("/", methods=["GET"])
 @audit_repo_action("list_repos")
 def list_repos(user_id):
     store = get_user_store(user_id)
     repos = store.list_repos()
     return jsonify([repo.dict() for repo in repos])
-
 
 
 @repos_bp.route("/", methods=["POST"])
@@ -43,7 +43,6 @@ def clone_repo(user_id):
         return jsonify({"error": str(e)}), 400
 
 
-
 # GET /users/<user_id>/repos/<repo_id>: Get repository details
 @repos_bp.route("/<repo_id>", methods=["GET"])
 @audit_repo_action("get_repo_details")
@@ -54,7 +53,6 @@ def get_repo_details(user_id, repo_id):
         return jsonify(repo.dict())
     except Exception as e:
         return jsonify({"error": str(e)}), 404
-
 
 
 # POST /users/<user_id>/repos/<repo_id>: Switch active repository (dummy context for now)

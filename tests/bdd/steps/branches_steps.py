@@ -3,27 +3,50 @@ from behave import then, when
 
 API_URL = "http://localhost:5000"
 
-
-@when("I GET /repos/{repo_id}/branches")
-def when_get_repos_repo_id_branches(context, repo_id):
-    context.response = requests.get(f"{API_URL}/repos/{repo_id}/branches/")
+DEFAULT_USER = "alice"
 
 
-@when('I POST to /repos/{repo_id}/branches with name "{branch_name}"')
-def when_post_repos_repo_id_branches_with_name(context, repo_id, branch_name):
-    context.response = requests.post(
-        f"{API_URL}/repos/{repo_id}/branches/", json={"name": branch_name}
+def get_user():
+    return getattr(
+        getattr(
+            getattr(__import__("inspect").stack()[2][0], "f_locals", {{}}),
+            "context",
+            None,
+        ),
+        "user_id",
+        DEFAULT_USER,
     )
 
 
-@when("I POST to /repos/{repo_id}/branches/{branch}")
-def when_post_repos_repo_id_branches_branch(context, repo_id, branch):
-    context.response = requests.post(f"{API_URL}/repos/{repo_id}/branches/{branch}")
+@when("I GET /users/{user_id}/repos/{repo_id}/branches")
+def when_get_user_repos_repo_id_branches(context, user_id, repo_id):
+    context.response = requests.get(
+        f"{API_URL}/users/{user_id}/repos/{repo_id}/branches/"
+    )
 
 
-@when("I DELETE /repos/{repo_id}/branches/{branch}")
-def when_delete_repos_repo_id_branches_branch(context, repo_id, branch):
-    context.response = requests.delete(f"{API_URL}/repos/{repo_id}/branches/{branch}")
+@when('I POST to /users/{user_id}/repos/{repo_id}/branches with name "{branch_name}"')
+def when_post_user_repos_repo_id_branches_with_name(
+    context, user_id, repo_id, branch_name
+):
+    context.response = requests.post(
+        f"{API_URL}/users/{user_id}/repos/{repo_id}/branches/",
+        json={"name": branch_name},
+    )
+
+
+@when("I POST to /users/{user_id}/repos/{repo_id}/branches/{branch}")
+def when_post_user_repos_repo_id_branches_branch(context, user_id, repo_id, branch):
+    context.response = requests.post(
+        f"{API_URL}/users/{user_id}/repos/{repo_id}/branches/{branch}"
+    )
+
+
+@when("I DELETE /users/{user_id}/repos/{repo_id}/branches/{branch}")
+def when_delete_user_repos_repo_id_branches_branch(context, user_id, repo_id, branch):
+    context.response = requests.delete(
+        f"{API_URL}/users/{user_id}/repos/{repo_id}/branches/{branch}"
+    )
 
 
 @then('the response should contain a branch named "{branch_name}"')

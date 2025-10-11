@@ -1,11 +1,15 @@
+import os
 
 from flask import Blueprint, jsonify, request
-import os
+
 from ..audit import audit_repo_action
 from ..models.repository_store import RepositoryStore
 from ..schemas import BranchNameSchema
 
-branches_bp = Blueprint("branches", __name__, url_prefix="/users/<user_id>/repos/<repo_id>/branches")
+branches_bp = Blueprint(
+    "branches", __name__, url_prefix="/users/<user_id>/repos/<repo_id>/branches"
+)
+
 
 def get_user_store(user_id):
     base_dir = os.environ.get("GIT_REST_WORKDIR", "/tmp/git-rest")
@@ -13,7 +17,6 @@ def get_user_store(user_id):
     if not os.path.exists(user_dir):
         os.makedirs(user_dir, exist_ok=True)
     return RepositoryStore(base_dir=user_dir)
-
 
 
 @branches_bp.route("/", methods=["GET"])
@@ -25,7 +28,6 @@ def list_branches(user_id, repo_id):
         return jsonify([branch.dict() for branch in repo.branches])
     except Exception as e:
         return jsonify({"error": str(e)}), 404
-
 
 
 @branches_bp.route("/", methods=["POST"])
@@ -51,7 +53,6 @@ def create_branch(user_id, repo_id):
         return jsonify({"error": str(e)}), 400
 
 
-
 @branches_bp.route("/<branch>", methods=["POST"])
 @audit_repo_action("switch_branch")
 def switch_branch(user_id, repo_id, branch):
@@ -67,7 +68,6 @@ def switch_branch(user_id, repo_id, branch):
         )
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-
 
 
 @branches_bp.route("/<branch>", methods=["DELETE"])
