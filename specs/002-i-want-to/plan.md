@@ -19,13 +19,13 @@
 
 **Language/Version**: Python 3.12+
 **Primary Dependencies**: Flask, gitpython, pydantic
-**Storage**: Filesystem (user data in separate directories/namespaces)
+**Storage**: Filesystem (user data in separate user namespaces/directories; "user namespace" is the standard term)
 **Testing**: pytest (unit), Behave (BDD)
 **Target Platform**: Linux server
 **Project Type**: Single backend REST API
-**Performance Goals**: Support at least 10 concurrent users performing repository operations without degradation in isolation or performance
-**Constraints**: No cross-user data access; audit log retention 1 year; unauthorized access returns HTTP 403 and is logged
-**Scale/Scope**: Minimum 10 concurrent users; each user can have multiple repositories, branches, and files
+**Performance Goals**: Support at least 10 concurrent users performing repository operations with no more than 10% increase in average operation latency and no degradation in user namespace isolation (see spec for measurable criteria)
+**Constraints**: No cross-user data access (user namespace isolation); audit log retention 1 year (with explicit handling for log expiration and access errors); unauthorized access returns HTTP 403 and is logged; audit log write failures must trigger rollback/recovery logic (see tasks)
+**Scale/Scope**: Minimum 10 concurrent users; each user can have multiple repositories, branches, and files; all non-functional requirements and edge cases are mapped to tasks in Phase 6
 
 ## Constitution Check
 

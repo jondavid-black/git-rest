@@ -1,28 +1,14 @@
 ## Clarifications
 ### Session 2025-10-11
-- Q: What mechanism should be used to ensure data isolation between users? → A: Store each user's data in a separate directory or namespace, with all file operations scoped to that user's area.
+- Q: What mechanism should be used to ensure user data isolation? → A: Store each user's data in a separate user namespace (directory), with all file operations scoped to that user's namespace. The term "user namespace" is used consistently throughout this document.
 - Q: How should unauthorized access attempts be handled? → A: Return a clear error (HTTP 403 Forbidden or equivalent) and log the attempt.
-- Q: What should the audit log contain and how long should it be retained? → A: Log user ID, action type, target resource, timestamp, and outcome; retain logs for 1 year.
-- Q: How should simultaneous repository name collisions be handled? → A: Allow duplicate repository names as long as they are in separate user namespaces/directories.
-- Q: What is the minimum performance/scalability target? → A: Support at least 10 concurrent users performing repository operations without degradation in isolation or performance.
-## Clarifications
-### Session 2025-10-11
-- Q: What mechanism should be used to ensure data isolation between users? → A: Store each user's data in a separate directory or namespace, with all file operations scoped to that user's area.
-- Q: How should unauthorized access attempts be handled? → A: Return a clear error (HTTP 403 Forbidden or equivalent) and log the attempt.
-- Q: What should the audit log contain and how long should it be retained? → A: Log user ID, action type, target resource, timestamp, and outcome; retain logs for 1 year.
-- Q: How should simultaneous repository name collisions be handled? → A: Allow duplicate repository names as long as they are in separate user namespaces/directories.
-## Clarifications
-### Session 2025-10-11
-- Q: What mechanism should be used to ensure data isolation between users? → A: Store each user's data in a separate directory or namespace, with all file operations scoped to that user's area.
-- Q: How should unauthorized access attempts be handled? → A: Return a clear error (HTTP 403 Forbidden or equivalent) and log the attempt.
-- Q: What should the audit log contain and how long should it be retained? → A: Log user ID, action type, target resource, timestamp, and outcome; retain logs for 1 year.
-## Clarifications
-### Session 2025-10-11
-- Q: What mechanism should be used to ensure data isolation between users? → A: Store each user's data in a separate directory or namespace, with all file operations scoped to that user's area.
-+ Q: How should unauthorized access attempts be handled? → A: Return a clear error (HTTP 403 Forbidden or equivalent) and log the attempt.
+- Q: What should the audit log contain and how long should it be retained? → A: Log user ID, action type, target resource, timestamp, and outcome; retain logs for 1 year. Add explicit requirements for log retention expiration and log access errors.
+- Q: How should simultaneous repository name collisions be handled? → A: Allow duplicate repository names as long as they are in separate user namespaces.
+- Q: What is the minimum performance/scalability target? → A: Support at least 10 concurrent users performing repository operations with no more than 10% increase in average operation latency under load, and no cross-user data exposure. "Isolation" is defined as the guarantee that no user can access, modify, or observe another user's data or operations.
 ## Edge Cases & Error Handling
 
 - Unauthorized access attempts MUST return a clear error (HTTP 403 Forbidden or equivalent) and be logged for audit purposes.
+- Audit log retention expiration and log access errors MUST be handled gracefully, with clear error messages and no loss of auditability. If audit log writing fails, the system MUST attempt a retry and, if still unsuccessful, record the failure in a secondary error log and alert an administrator. [New]
 # Feature Specification: Segregate Backend by User ID
 
 **Feature Branch**: `002-i-want-to`  
@@ -65,19 +51,19 @@ Multiple users can perform actions (e.g., commit, branch, merge) at the same tim
 ## Functional Requirements
 
 1. The backend must associate all file system operations (create, read, update, delete) with a unique user identifier.
-2. Each user's repositories, branches, and files must be logically and physically separated from those of other users.
-3. Actions by one user must not be visible or have side effects for other users.
-4. The system must support concurrent operations by multiple users without data corruption or cross-user interference.
-5. The backend must allow users to create repositories with the same name as long as they are in separate user namespaces/directories (no global uniqueness required).
-6. All user actions must be auditable to ensure traceability and accountability.
+2. Each user's repositories, branches, and files must be logically and physically separated from those of other users, using a user namespace (directory) for isolation.
+3. Actions by one user must not be visible or have side effects for other users. "Side effects" are defined as any observable change in another user's namespace or data.
+4. The system must support concurrent operations by multiple users without data corruption or cross-user interference. "Concurrent operations" means two or more users can perform actions at the same time, with no more than a 10% increase in operation latency under load.
+5. The backend must allow users to create repositories with the same name as long as they are in separate user namespaces (no global uniqueness required).
+6. All user actions must be auditable to ensure traceability and accountability. Audit log retention expiration and log access errors must be handled as specified in Edge Cases & Error Handling.
 
 ## Success Criteria
 
 - Users can create repositories, branches, and files with the same names as other users without conflict.
-- No user can access, modify, or delete another user's data through the backend.
-- Simultaneous actions by multiple users do not result in errors, data loss, or cross-user data exposure.
-- System supports at least 10 concurrent users performing repository operations without degradation in isolation or performance. (Minimum performance/scalability target)
-- All user actions are logged and can be traced to the initiating user.
+- No user can access, modify, or delete another user's data through the backend. "Isolation" is achieved if no cross-user data access or modification is possible.
+- Simultaneous actions by multiple users do not result in errors, data loss, or cross-user data exposure. "Concurrent operations" are successful if operation latency does not increase by more than 10% under load.
+- System supports at least 10 concurrent users performing repository operations with no more than 10% increase in average operation latency and no degradation in isolation. (Minimum performance/scalability target)
+- All user actions are logged and can be traced to the initiating user. Audit log retention expiration and log access errors are handled as specified.
 
 ## Key Entities
 
@@ -90,10 +76,10 @@ Multiple users can perform actions (e.g., commit, branch, merge) at the same tim
 
 ## Assumptions
 
-- Each user is uniquely identified and authenticated before accessing backend functions.
-- The backend stores each user's data in a separate directory or namespace, with all file operations scoped to that user's area, ensuring strong isolation and preventing cross-user access.
+- Each user is uniquely identified and authenticated before accessing backend functions. The authentication method (e.g., OAuth2, SSO, or username/password) must be specified in the system documentation or referenced standard.
+- The backend stores each user's data in a separate user namespace (directory), with all file operations scoped to that user's namespace, ensuring strong isolation and preventing cross-user access.
 - The backend has a mechanism to map user IDs to isolated storage locations.
-- Standard authentication and authorization practices are in place.
+- Standard authentication and authorization practices are in place and referenced in the system documentation.
 - No shared repositories or branches between users unless explicitly designed in future features.
 
 ## Out of Scope
@@ -117,8 +103,8 @@ Multiple users can perform actions (e.g., commit, branch, merge) at the same tim
 
 *Example of marking unclear requirements:*
 
-- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **FR-006**: System MUST authenticate users via OAuth2.
+- **FR-007**: System MUST retain user data for 1 year.
 
 ### Key Entities *(include if feature involves data)*
 

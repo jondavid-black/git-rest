@@ -77,13 +77,21 @@ description: "Task list for feature: Segregate Backend by User ID"
 
 ---
 
+
 ## Phase 5: Polish & Cross-Cutting Concerns
 
 - [ ] T022 [P] Update and polish documentation in `docs/`
 - [ ] T023 Code cleanup and refactoring across `src/git_rest/`
-- [ ] T024 Performance optimization for user isolation and concurrency
-- [ ] T025 [P] Security review and hardening for user isolation
+- [ ] T024 Performance optimization for user namespace isolation and concurrency (add measurable targets per spec)
+- [ ] T025 [P] Security review and hardening for user namespace isolation (ensure no cross-user access)
 - [ ] T026 Run quickstart.md validation
+
+## Phase 6: Non-Functional & Edge Case Requirements
+
+- [ ] T027 [P] Add explicit audit log retention expiration handling and log access error handling in `src/git_rest/audit.py`
+- [ ] T028 [P] Add rollback/recovery logic for audit log write failures in `src/git_rest/audit.py` and document in `docs/api.md`
+- [ ] T029 [P] Add measurable performance/scalability tests (simulate 10+ concurrent users, verify <10% latency increase) in `tests/unit/` or `tests/bdd/`
+- [ ] T030 [P] Add security test to verify no cross-user data access in `tests/unit/` or `tests/bdd/`
 
 ---
 
