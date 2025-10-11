@@ -17,9 +17,9 @@
 **Testing**: pytest (unit), Behave (BDD acceptance)
 **Target Platform**: Linux server (containerized, supports Docker/Podman/Kubernetes)
 **Project Type**: Web backend (REST API)
-**Performance Goals**: Fast API response (<200ms p95 for typical git operations), support for concurrent users (NEEDS CLARIFICATION: target concurrency/load)
+**Performance Goals**: Fast API response (<200ms p95 for typical git operations), support for up to 100 concurrent users (targeted for team-scale usage; Flask + Gunicorn with 4-8 workers is sufficient for this scale).
 **Constraints**: No hardcoded secrets; all secrets via environment variables. Never expose internal server data or exception traces in responses. Must be extensible via Flask Blueprints. Must validate all inputs with pydantic. Must be easily containerized and deployable behind a reverse proxy. No database allowed.
-**Scale/Scope**: Single-tenant or multi-tenant (NEEDS CLARIFICATION: is multi-user/multi-tenant required?), expected repo size/usage (NEEDS CLARIFICATION)
+**Scale/Scope**: Multi-repository per backend instance, with logical isolation between repositories. Multi-user access is allowed, but all users are assumed to be trusted team members (no strict tenant isolation). Target repository size: up to ~1GB, <100k files per repo. Larger monorepos are discouraged; modular repo design is preferred.
 
 ## Constitution Check
 

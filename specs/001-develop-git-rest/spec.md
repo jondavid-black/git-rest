@@ -110,7 +110,7 @@ A user can retrieve file contents or listings, with small files returned directl
 - **Branch**: Represents a branch within a repository.
 - **Commit**: Represents a commit, including metadata and file changes.
 - **File/Blob**: Represents a file or binary object in the repository.
-- **User**: Represents an authenticated user interacting with the API. [NEEDS CLARIFICATION: What user roles or permissions are required?]
+- **User**: Represents an authenticated user interacting with the API. There are no distinct user roles or responsibilities (e.g., user vs admin); all users are trusted team members and have equal visibility and access to all repository content.
 
 ## Success Criteria *(mandatory)*
 
