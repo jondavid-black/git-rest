@@ -1,12 +1,12 @@
 import re
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 
 class RepoNameSchema(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
 
-    @validator("name")
+    @field_validator("name")
     def valid_repo_name(cls, v):
         if not re.match(r"^[\w.-]+$", v):
             raise ValueError(
@@ -18,7 +18,7 @@ class RepoNameSchema(BaseModel):
 class BranchNameSchema(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
 
-    @validator("name")
+    @field_validator("name")
     def valid_branch_name(cls, v):
         # Git branch name rules (simplified)
         if (
@@ -37,7 +37,7 @@ class BranchNameSchema(BaseModel):
 class FilePathSchema(BaseModel):
     path: str = Field(..., min_length=1, max_length=4096)
 
-    @validator("path")
+    @field_validator("path")
     def valid_file_path(cls, v):
         if v.startswith("/") or ".." in v.split("/"):
             raise ValueError(

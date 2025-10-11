@@ -13,9 +13,10 @@ USERS = {"admin": "password123"}
 
 
 def generate_token(username: str, expires_in: int = 3600):
+    from datetime import datetime, UTC
     payload = {
         "sub": username,
-        "exp": datetime.utcnow() + timedelta(seconds=expires_in),
+        "exp": datetime.now(UTC) + timedelta(seconds=expires_in),
     }
     return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
