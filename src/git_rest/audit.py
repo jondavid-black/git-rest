@@ -17,7 +17,8 @@ def write_audit_log(user_id, action_type, target_resource, outcome, extra=None):
     if not os.path.exists(log_dir):
         os.makedirs(log_dir, exist_ok=True)
     log_file = os.path.join(log_dir, f"{user_id}.log")
-    timestamp = datetime.utcnow().isoformat()
+    from datetime import datetime, UTC
+    timestamp = datetime.now(UTC).isoformat()
     entry = {
         "user_id": user_id,
         "action_type": action_type,
