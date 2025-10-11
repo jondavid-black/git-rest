@@ -5,6 +5,8 @@ from models.repository import Repository, Remote, Branch, RepoStatus, FileEntry
 from datetime import datetime
 
 class RepositoryStore:
+    def _load_git_repo(self, repo_path: str):
+        return git.Repo(repo_path)
     def __init__(self, base_dir: Optional[str] = None):
         self.base_dir = base_dir or os.environ.get("GIT_REST_WORKDIR", "/tmp/git-rest")
         self.base_dir = os.path.abspath(self.base_dir)

@@ -39,4 +39,41 @@ Switch the active repository context for the current user/session.
 - 200 OK: Confirmation message and repository object
 - 404 Not Found: Error message
 
+
+## Branch Management Endpoints
+
+### `GET /repos/{repo_id}/branches`
+List all branches in the specified repository.
+
+**Response:**
+- 200 OK: JSON array of branch objects
+- 404 Not Found: Error message
+
+### `POST /repos/{repo_id}/branches`
+Create a new branch in the specified repository.
+
+**Request JSON:**
+```
+{
+	"name": "feature-x"
+}
+```
+**Response:**
+- 201 Created: JSON array of branch objects (including the new branch)
+- 400 Bad Request: Error message
+
+### `POST /repos/{repo_id}/branches/{branch}`
+Switch to the specified branch in the repository.
+
+**Response:**
+- 200 OK: Confirmation message and repository object
+- 400 Bad Request: Error message
+
+### `DELETE /repos/{repo_id}/branches/{branch}`
+Delete the specified branch from the repository.
+
+**Response:**
+- 200 OK: JSON array of remaining branch objects
+- 400 Bad Request: Error message
+
 See the OpenAPI spec for full request/response details and additional endpoints.
