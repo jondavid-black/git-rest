@@ -1,9 +1,11 @@
-from flask import Blueprint, request, jsonify
-from ..models.repository_store import RepositoryStore
+from flask import Blueprint, jsonify, request
+
 from ..audit import audit_repo_action
+from ..models.repository_store import RepositoryStore
 
 diff_bp = Blueprint("diff", __name__, url_prefix="/repos/<repo_id>/diff")
 store = RepositoryStore()
+
 
 @diff_bp.route("/", methods=["GET"])
 @audit_repo_action("get_diff")

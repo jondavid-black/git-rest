@@ -1,6 +1,16 @@
+
 # API Reference
 
+
 The full OpenAPI contract is available at [specs/001-develop-git-rest/contracts/openapi.yaml](../specs/001-develop-git-rest/contracts/openapi.yaml).
+
+## Authentication & Environment
+
+- All endpoints require a JWT access token in the `Authorization` header: `Bearer <token>`
+- Obtain a token via the `/login` endpoint (see README for usage)
+- Set the environment variable `GIT_REST_SECRET_KEY` to a strong, random value in production
+- Optionally set `GIT_REST_WORKDIR` to control the repository storage location
+
 
 
 ## Repository Management Endpoints

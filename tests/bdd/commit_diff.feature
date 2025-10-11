@@ -5,20 +5,20 @@ Feature: Commit and diff operations
 
   Background:
     Given the API is running
-    And a repository named "sample-repo" exists
+  And a repository named "Hello-World" exists
 
   Scenario: Commit changes
-    When I POST to /repos/sample-repo/commit with message "Initial commit" and author "Alice"
+  When I POST to /repos/Hello-World/commit with message "Initial commit" and author "Alice"
     Then the response status should be 201
     And the response should contain "message": "Initial commit"
 
   Scenario: Get working tree diff
-    When I GET /repos/sample-repo/diff
+  When I GET /repos/Hello-World/diff
     Then the response status should be 200
     And the response should contain "diff"
 
   Scenario: Get diff between two commits
-    Given two commits exist in "sample-repo"
-    When I GET /repos/sample-repo/diff?a={commit_a}&b={commit_b}
+  Given two commits exist in "Hello-World"
+  When I GET /repos/Hello-World/diff?a={commit_a}&b={commit_b}
     Then the response status should be 200
     And the response should contain "diff"

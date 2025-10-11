@@ -1,15 +1,19 @@
 import os
 import shutil
 import tempfile
-import pytest
+
 import git
-from src.git_rest.models.repository_store import RepositoryStore
+import pytest
+
+from git_rest.models.repository_store import RepositoryStore
+
 
 @pytest.fixture
 def temp_repo_dir():
     d = tempfile.mkdtemp()
     yield d
     shutil.rmtree(d)
+
 
 def test_commit_and_diff(temp_repo_dir):
     store = RepositoryStore(base_dir=temp_repo_dir)
@@ -23,7 +27,9 @@ def test_commit_and_diff(temp_repo_dir):
     with open(file_path, "a") as f:
         f.write("\nTest line\n")
     git_repo.git.add(A=True)
-    commit = git_repo.index.commit("Test commit", author=git.Actor("TestUser", "test@example.com"))
+    commit = git_repo.index.commit(
+        "Test commit", author=git.Actor("TestUser", "test@example.com")
+    )
     assert commit.message.strip() == "Test commit"
 
     # Get diff (should be empty after commit)

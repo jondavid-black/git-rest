@@ -1,8 +1,8 @@
 import os
-from typing import Optional
+
 
 class FileSystemIsolation:
-    def __init__(self, base_dir: Optional[str] = None):
+    def __init__(self, base_dir: str | None = None):
         self.base_dir = base_dir or os.environ.get("GIT_REST_WORKDIR", "/tmp/git-rest")
         self.base_dir = os.path.abspath(self.base_dir)
         if not os.path.exists(self.base_dir):
@@ -11,9 +11,11 @@ class FileSystemIsolation:
     def safe_join(self, *paths) -> str:
         # Join and resolve to absolute path
         joined = os.path.abspath(os.path.join(self.base_dir, *paths))
-        # Ensure the result is within the base_dir
-        if not joined.startswith(self.base_dir + os.sep):
-            raise ValueError("Path traversal detected or path outside allowed directory")
+        # Allow base_dir itself, or any subpath
+        if not (joined == self.base_dir or joined.startswith(self.base_dir + os.sep)):
+            raise ValueError(
+                "Path traversal detected or path outside allowed directory"
+            )
         return joined
 
     def is_safe_path(self, path: str) -> bool:

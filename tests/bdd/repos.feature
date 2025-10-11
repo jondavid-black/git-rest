@@ -5,9 +5,9 @@ Feature: Repository management
 
   Scenario: Clone a new repository
     Given the API is running
-    When I POST to /repos with name "sample-repo" and url "https://github.com/example/sample-repo.git"
+  When I POST to /repos with name "Hello-World" and url "https://github.com/octocat/Hello-World.git"
     Then the response status should be 201
-    And the response should contain "name": "sample-repo"
+  And the response should contain "name": "Hello-World"
 
   Scenario: List repositories
     Given the API is running
@@ -17,14 +17,14 @@ Feature: Repository management
 
   Scenario: Get repository details
     Given the API is running
-    And a repository named "sample-repo" exists
-    When I GET /repos/sample-repo
-    Then the response status should be 200
-    And the response should contain "name": "sample-repo"
+  And a repository named "Hello-World" exists
+  When I GET /repos/Hello-World
+  Then the response status should be 200
+  And the response should contain "name": "Hello-World"
 
   Scenario: Switch active repository
     Given the API is running
-    And a repository named "sample-repo" exists
-    When I POST to /repos/sample-repo
-    Then the response status should be 200
-    And the response should contain "message": "Switched to repository 'sample-repo'"
+  And a repository named "Hello-World" exists
+  When I POST to /repos/Hello-World
+  Then the response status should be 200
+  And the response should contain "message": "Switched to repository 'Hello-World'"

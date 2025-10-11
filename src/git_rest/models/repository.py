@@ -1,21 +1,25 @@
-from pydantic import BaseModel, Field
-from typing import List, Optional
 from datetime import datetime
+
+from pydantic import BaseModel
+
 
 class Remote(BaseModel):
     name: str
     url: str
 
+
 class Branch(BaseModel):
     name: str
     is_current: bool = False
+
 
 class Commit(BaseModel):
     hash: str
     author: str
     date: datetime
     message: str
-    parent_hashes: List[str] = []
+    parent_hashes: list[str] = []
+
 
 class FileEntry(BaseModel):
     path: str
@@ -23,16 +27,18 @@ class FileEntry(BaseModel):
     size: int
     last_modified: datetime
 
+
 class RepoStatus(BaseModel):
-    staged: List[FileEntry] = []
-    unstaged: List[FileEntry] = []
-    untracked: List[FileEntry] = []
+    staged: list[FileEntry] = []
+    unstaged: list[FileEntry] = []
+    untracked: list[FileEntry] = []
+
 
 class Repository(BaseModel):
     id: str
     name: str
     path: str
-    remotes: List[Remote] = []
-    branches: List[Branch] = []
-    current_branch: Optional[str] = None
-    status: Optional[RepoStatus] = None
+    remotes: list[Remote] = []
+    branches: list[Branch] = []
+    current_branch: str | None = None
+    status: RepoStatus | None = None

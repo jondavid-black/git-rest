@@ -1,23 +1,24 @@
-from functools import wraps
-from flask import request, jsonify, current_app
-import jwt
 import os
 from datetime import datetime, timedelta
+from functools import wraps
+
+import jwt
+from flask import jsonify, request
 
 # Example secret key usage (should be set via env)
 SECRET_KEY = os.environ.get("GIT_REST_SECRET_KEY", "changeme-super-secret-key")
 
 # Dummy user store for demonstration (replace with real user management)
-USERS = {
-    "admin": "password123"
-}
+USERS = {"admin": "password123"}
+
 
 def generate_token(username: str, expires_in: int = 3600):
     payload = {
         "sub": username,
-        "exp": datetime.utcnow() + timedelta(seconds=expires_in)
+        "exp": datetime.utcnow() + timedelta(seconds=expires_in),
     }
     return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+
 
 def decode_token(token: str):
     try:
@@ -27,6 +28,7 @@ def decode_token(token: str):
         return None
     except jwt.InvalidTokenError:
         return None
+
 
 def require_auth(f):
     @wraps(f)
@@ -40,7 +42,9 @@ def require_auth(f):
             return jsonify({"error": "Invalid or expired token"}), 401
         request.user = user
         return f(*args, **kwargs)
+
     return decorated
+
 
 # Example login endpoint (to be registered in Flask app)
 def login():

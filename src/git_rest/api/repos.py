@@ -1,19 +1,20 @@
+from flask import Blueprint, jsonify, request
 
-from flask import Blueprint, request, jsonify
-
+from ..audit import audit_repo_action
+from ..context import RepoContext
 from ..models.repository_store import RepositoryStore
 from ..schemas import RepoNameSchema
-from ..context import RepoContext
-from ..audit import audit_repo_action
 
 repos_bp = Blueprint("repos", __name__, url_prefix="/repos")
 store = RepositoryStore()
+
 
 @repos_bp.route("/", methods=["GET"])
 @audit_repo_action("list_repos")
 def list_repos():
     repos = store.list_repos()
     return jsonify([repo.dict() for repo in repos])
+
 
 @repos_bp.route("/", methods=["POST"])
 @audit_repo_action("clone_repo")
@@ -40,6 +41,7 @@ def get_repo_details(repo_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 404
 
+
 # POST /repos/<repo_id>: Switch active repository (dummy context for now)
 @repos_bp.route("/<repo_id>", methods=["POST"])
 @audit_repo_action("switch_repo")
@@ -47,6 +49,8 @@ def switch_repo(repo_id):
     try:
         repo = store.get_repo(repo_id)
         RepoContext.set_current_repo(repo_id)
-        return jsonify({"message": f"Switched to repository '{repo_id}'", "repo": repo.dict()})
+        return jsonify(
+            {"message": f"Switched to repository '{repo_id}'", "repo": repo.dict()}
+        )
     except Exception as e:
         return jsonify({"error": str(e)}), 404

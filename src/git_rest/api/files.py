@@ -1,14 +1,16 @@
-from flask import Blueprint, jsonify, request
-from flask import send_file, redirect, url_for, request
-from ..services.secure_url import SecureURLGenerator
-from ..models.repository_store import RepositoryStore
+import datetime
+import os
+
+from flask import Blueprint, jsonify, request, send_file
+
 from ..audit import audit_repo_action
 from ..filesystem import FileSystemIsolation
-import os
-import datetime
+from ..models.repository_store import RepositoryStore
+from ..services.secure_url import SecureURLGenerator
 
 files_bp = Blueprint("files", __name__, url_prefix="/repos/<repo_id>/files")
 store = RepositoryStore()
+
 
 @files_bp.route("/", methods=["GET"])
 @audit_repo_action("list_files")
@@ -21,12 +23,20 @@ def list_files(repo_id):
         entries = []
         for entry in os.scandir(dir_path):
             stat = entry.stat()
-            entries.append({
-                "path": os.path.relpath(entry.path, repo.path),
-                "type": "dir" if entry.is_dir() else "file" if entry.is_file() else "symlink",
-                "size": stat.st_size,
-                "last_modified": datetime.datetime.fromtimestamp(stat.st_mtime).isoformat()
-            })
+            entries.append(
+                {
+                    "path": os.path.relpath(entry.path, repo.path),
+                    "type": "dir"
+                    if entry.is_dir()
+                    else "file"
+                    if entry.is_file()
+                    else "symlink",
+                    "size": stat.st_size,
+                    "last_modified": datetime.datetime.fromtimestamp(
+                        stat.st_mtime
+                    ).isoformat(),
+                }
+            )
         return jsonify(entries)
     except Exception as e:
         return jsonify({"error": str(e)}), 400
@@ -46,11 +56,28 @@ def get_file_content(repo_id, file_path):
         threshold = 1024 * 1024
         if size > threshold:
             generator = SecureURLGenerator()
+            # Generate a secure URL pointing to the /download endpoint
             secure_url = generator.generate(repo_id, file_path)
-            return jsonify({"redirect": True, "url": secure_url}), 302
+            # Ensure the URL is for /download, not the same endpoint
+            from flask import url_for
+
+            download_url = url_for(
+                "files.download_file_secure",
+                repo_id=repo_id,
+                file_path=file_path,
+                _external=False,
+            )
+            # Append token and expires
+            from urllib.parse import parse_qs, urlencode, urlparse
+
+            parsed = urlparse(secure_url)
+            qs = parse_qs(parsed.query)
+            download_url = f"{download_url}?{urlencode(qs, doseq=True)}"
+            return jsonify({"redirect": True, "url": download_url}), 302
         return send_file(abs_path, as_attachment=False)
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
 
 # Secure file download endpoint (verifies token)
 @files_bp.route("/<path:file_path>/download", methods=["GET"])
@@ -72,4 +99,3 @@ def download_file_secure(repo_id, file_path):
         return send_file(abs_path, as_attachment=True)
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-    

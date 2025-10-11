@@ -1,15 +1,17 @@
-import os
 import shutil
 import tempfile
+
 import pytest
-import git
-from src.git_rest.models.repository_store import RepositoryStore
+
+from git_rest.models.repository_store import RepositoryStore
+
 
 @pytest.fixture
 def temp_repo_dir():
     d = tempfile.mkdtemp()
     yield d
     shutil.rmtree(d)
+
 
 def test_branch_operations(temp_repo_dir):
     store = RepositoryStore(base_dir=temp_repo_dir)
@@ -30,7 +32,18 @@ def test_branch_operations(temp_repo_dir):
     assert repo.current_branch == branch_name
 
     # Delete branch
-    git_repo.git.checkout("main")
-    git_repo.git.branch('-D', branch_name)
+    default_branch = git_repo.head.reference.name
+    if branch_name == default_branch:
+        # If the feature branch is the default, create and checkout a temp branch
+        temp_branch = "temp-main"
+        git_repo.git.branch(temp_branch)
+        git_repo.git.checkout(temp_branch)
+        assert git_repo.active_branch.name == temp_branch
+    else:
+        git_repo.git.checkout(default_branch)
+        assert git_repo.active_branch.name == default_branch
+
+    # Now delete the feature branch
+    git_repo.git.branch("-D", branch_name)
     repo = store.get_repo(repo_name)
     assert all(b.name != branch_name for b in repo.branches)

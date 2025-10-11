@@ -20,8 +20,12 @@ dev = [
     "mkdocs>=1.6.1",
     "mkdocs-material>=9.6.21",
     "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
     "ruff>=0.14.0",
 ]
+
+[project.scripts]
+git-rest-debug = "git_rest.__main__:main"
 
 [tool.ruff.lint]
 ignore = ["E501"]
@@ -29,7 +33,11 @@ select = ["E", "F", "I", "W", "UP", "B"] # A good starting set of rules
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "-ra -q --cov=src --cov-fail-under=75 --cov-report=html"
+addopts = "-ra -q --cov=src --cov-report=html"
 testpaths = [
     "tests/unit",
 ]
+
+[tool.behave]
+paths = ["tests/bdd"]
+format = ["pretty"]

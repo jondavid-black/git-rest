@@ -1,12 +1,14 @@
 import logging
+
 from flask import Flask, jsonify
 
 # Logging setup
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s %(levelname)s %(name)s %(message)s',
+    format="%(asctime)s %(levelname)s %(name)s %(message)s",
 )
 logger = logging.getLogger("git_rest")
+
 
 # Error handling utilities
 def register_error_handlers(app: Flask):
