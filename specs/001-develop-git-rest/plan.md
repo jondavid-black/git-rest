@@ -11,12 +11,6 @@
 
 ## Technical Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
-
 **Language/Version**: Python 3.12+
 **Primary Dependencies**: Flask (with Blueprints, application factory pattern), gitpython, pydantic, Gunicorn, Nginx (reverse proxy), Docker, pytest, Behave, uv, ruff
 **Storage**: File system only (no database); all state and data reside in the working directory of the server
