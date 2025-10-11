@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+# BDD test files
+test_working_dir/
+pretty.output
+
 # Distribution / packaging
 .Python
 build/
