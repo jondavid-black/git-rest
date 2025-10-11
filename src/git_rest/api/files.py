@@ -8,13 +8,23 @@ from ..filesystem import FileSystemIsolation
 from ..models.repository_store import RepositoryStore
 from ..services.secure_url import SecureURLGenerator
 
-files_bp = Blueprint("files", __name__, url_prefix="/repos/<repo_id>/files")
-store = RepositoryStore()
+files_bp = Blueprint(
+    "files", __name__, url_prefix="/users/<user_id>/repos/<repo_id>/files"
+)
+
+
+def get_user_store(user_id):
+    base_dir = os.environ.get("GIT_REST_WORKDIR", "/tmp/git-rest")
+    user_dir = os.path.join(base_dir, user_id)
+    if not os.path.exists(user_dir):
+        os.makedirs(user_dir, exist_ok=True)
+    return RepositoryStore(base_dir=user_dir)
 
 
 @files_bp.route("/", methods=["GET"])
 @audit_repo_action("list_files")
-def list_files(repo_id):
+def list_files(user_id, repo_id):
+    store = get_user_store(user_id)
     rel_path = request.args.get("path", "")
     try:
         repo = store.get_repo(repo_id)
@@ -44,7 +54,8 @@ def list_files(repo_id):
 
 @files_bp.route("/<path:file_path>", methods=["GET"])
 @audit_repo_action("get_file_content")
-def get_file_content(repo_id, file_path):
+def get_file_content(user_id, repo_id, file_path):
+    store = get_user_store(user_id)
     try:
         repo = store.get_repo(repo_id)
         fs = FileSystemIsolation(repo.path)
@@ -63,6 +74,7 @@ def get_file_content(repo_id, file_path):
 
             download_url = url_for(
                 "files.download_file_secure",
+                user_id=user_id,
                 repo_id=repo_id,
                 file_path=file_path,
                 _external=False,
@@ -82,7 +94,8 @@ def get_file_content(repo_id, file_path):
 # Secure file download endpoint (verifies token)
 @files_bp.route("/<path:file_path>/download", methods=["GET"])
 @audit_repo_action("download_file_secure")
-def download_file_secure(repo_id, file_path):
+def download_file_secure(user_id, repo_id, file_path):
+    store = get_user_store(user_id)
     expires = request.args.get("expires")
     token = request.args.get("token")
     if not expires or not token:

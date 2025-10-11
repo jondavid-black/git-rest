@@ -16,7 +16,8 @@ def step_impl_api_running(context):
 def step_impl_repo_exists(context, repo_name):
     import subprocess
 
-    repo_path = os.path.join("/tmp/git-rest", repo_name)
+    user_id = getattr(context, "user_id", "alice")
+    repo_path = os.path.join("/tmp/git-rest", user_id, repo_name)
     if not os.path.exists(repo_path):
         os.makedirs(repo_path, exist_ok=True)
         subprocess.run(["git", "init"], cwd=repo_path, check=True)

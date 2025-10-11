@@ -9,6 +9,17 @@ class RepositoryStore:
     def _load_git_repo(self, repo_path: str):
         return git.Repo(repo_path)
 
+    def get_user_repo(self, user: str, repo_id: str) -> Repository:
+        """
+        Get a repository for a specific user, assuming user isolation is implemented as base_dir/user/repo_id
+        """
+        repo_path = os.path.join(self.base_dir, user, repo_id)
+        if not os.path.isdir(os.path.join(repo_path, ".git")):
+            raise FileNotFoundError(
+                f"Repository '{repo_id}' for user '{user}' not found."
+            )
+        return self._load_repo(repo_path)
+
     def __init__(self, base_dir: str | None = None):
         import logging
 

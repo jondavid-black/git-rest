@@ -8,23 +8,23 @@ Feature: File delivery
   And a repository named "Hello-World" exists
 
   Scenario: List files in repository
-  When I GET /repos/Hello-World/files
+    When I GET /users/alice/repos/Hello-World/files
     Then the response status should be 200
     And the response should be a list
 
   Scenario: Retrieve small file content
-  When I GET /repos/Hello-World/files/README.md
+    When I GET /users/alice/repos/Hello-World/files/README.md
     Then the response status should be 200
     And the response should contain file content
 
   Scenario: Retrieve large file (redirect)
-  Given a large file named "bigfile.bin" exists in "Hello-World"
-  When I GET /repos/Hello-World/files/bigfile.bin
+  Given a large file named "bigfile.bin" exists in "users/alice/Hello-World"
+    When I GET /users/alice/repos/Hello-World/files/bigfile.bin
     Then the response status should be 302
     And the response should contain "url"
 
   Scenario: Download file via secure URL
-  Given a secure URL for "bigfile.bin" in "Hello-World"
+  Given a secure URL for "bigfile.bin" in "users/alice/Hello-World"
     When I GET the secure URL
     Then the response status should be 200
     And the response should contain file content
