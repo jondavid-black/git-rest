@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install uv
+        run: pip install uv
+      - name: Install dependencies
+        run: uv pip install -e .[dev]
+      - name: Lint with ruff
+        run: uv run ruff check src
+      - name: Format with ruff
+        run: uv run ruff format src
+      - name: Run unit tests (pytest)
+        run: uv run pytest
+      - name: Run BDD tests (behave)
+        run: uv run behave
+      - name: Build documentation (Mkdocs)
+        run: uv run mkdocs build
+      - name: Build Docker image
+        run: docker build -t git-rest .
+      - name: Tag and release (on main only)
+        if: github.ref == 'refs/heads/main'
+        run: echo "Tag and release steps go here"
