@@ -28,7 +28,11 @@ def before_feature(context, feature):
             resp = requests.get("http://localhost:5000/healthz")
             if resp.status_code == 200:
                 break
-        except Exception:
+            else:
+                print("Waiting for API server to start...")
+                time.sleep(0.2)
+        except Exception as e:
+            print("Environment exception: " + str(e))
             time.sleep(0.2)
     else:
         raise RuntimeError("API server did not start in time.")
