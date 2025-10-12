@@ -28,3 +28,6 @@ nav:
   - 'Getting Started': 'getting-started.md'
   - 'How-To Guides': 'how-to.md'
   - 'API Reference': 'api.md'
+  - 'Environment Setup': 'environment.md'
+  - 'Quickstart': 'specs/001-develop-git-rest/quickstart.md'
+  - 'OpenAPI Spec': 'specs/001-develop-git-rest/contracts/openapi.yaml'

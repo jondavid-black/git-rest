@@ -2,7 +2,7 @@
 # API Reference
 
 
-The full OpenAPI contract is available at [specs/001-develop-git-rest/contracts/openapi.yaml](../specs/001-develop-git-rest/contracts/openapi.yaml).
+The full OpenAPI contract is available at [specs/001-develop-git-rest/contracts/openapi.yaml](specs/001-develop-git-rest/contracts/openapi.yaml).
 
 ## Authentication & Environment
 
@@ -51,11 +51,24 @@ Switch the active repository context for the user.
 - 200 OK: Confirmation message and repository object
 - 404 Not Found: Error message
 
+
 ### `GET /users/{user_id}/repos/{repo_id}/origin`
 Get the remote/origin URL for a repository.
 
 **Response:**
 - 200 OK: `{ "origin": "https://github.com/example/repo.git" }`
+- 404 Not Found: Error message
+
+### `GET /users/{user_id}/repos/{repo_id}/status`
+Get the status of the specified repository for the user. Returns branch, cleanliness, and file status details.
+
+**Response:**
+- 200 OK: JSON object with:
+  - `branch`: Current branch name
+  - `is_clean`: Boolean, true if no staged/unstaged/untracked files
+  - `staged`: List of staged files (if any)
+  - `unstaged`: List of unstaged files (if any)
+  - `untracked`: List of untracked files (if any)
 - 404 Not Found: Error message
 
 ## Error Handling

@@ -25,6 +25,15 @@
 - **Detached HEAD**: 400 error if you try to commit in a detached HEAD state.
 - **Network failure**: 400 error if the remote cannot be reached during clone.
 
+
+## Checking Repository Status
+1. Send a GET request to `/users/{user_id}/repos/{repo_id}/status`.
+2. The response will include:
+	- `branch`: Current branch name
+	- `is_clean`: True if the working tree is clean
+	- `staged`, `unstaged`, `untracked`: Lists of files (if any)
+3. Use this to check if your repo has uncommitted changes or is ready for new operations.
+
 ## Other Operations
 - [Managing Branches](#): List, create, and switch branches via `/branches` endpoints.
 - [Committing Changes](#): Commit files with `/commit` endpoints.
