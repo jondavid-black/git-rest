@@ -9,4 +9,4 @@ set -e
 # Run migrations or setup here if needed
 
 # Start Gunicorn with Flask app
-exec uv run gunicorn -b 0.0.0.0:8000 src.git_rest.main:app
+exec gunicorn -b 0.0.0.0:8000 "src.git_rest.app:create_app()"
