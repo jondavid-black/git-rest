@@ -71,5 +71,20 @@ curl -X POST -H "Authorization: Bearer <token>" -d '{"name": "myrepo", "url": "h
 - Always set a strong `GIT_REST_SECRET_KEY` in production.
 - The demo user/password is for development only. Integrate with a real user management system for production.
 
+## Development Process
+Git-REST development heavily relies on GenAI technology.
+This repo uses GitHub Copilot and the GitHub Speckit extensions.
+The general workflow for starting new work should use the Speckit workflow in the GitHub Agent:
+- `/speckit.specify <Your high level requirements here>`
+- `/speckit.clarity`
+- `/speckit.plan`
+- `/speckit.tasks`
+- `/speckit.analyze`
+
+Completing these commands should establish a detailed plan to guide GitHub Copilot through the implementation phases.
+Occasionally you may need to nudge the AI as you work through this process by answering questions or providing clarification.
+Once you have completed these AI commands it is recommended to commit and push before beginning implementation.
+Note that this process will automatically create and work within a new branch based on the first few words you enter into the high level requirements text.
+
 ---
 For more, see the API docs and OpenAPI spec.

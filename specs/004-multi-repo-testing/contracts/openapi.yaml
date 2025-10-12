@@ -1,0 +1,85 @@
+openapi: 3.0.3
+info:
+  title: git-rest Multi-Repo API
+  version: 1.0.0
+paths:
+  /repos/clone:
+    post:
+      summary: Clone a new repository for the user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                origin_url:
+                  type: string
+                  description: Remote git repository URL
+      responses:
+        '201':
+          description: Repository cloned successfully
+        '400':
+          description: Name collision or invalid URL
+  /repos:
+    get:
+      summary: List all repositories for the user
+      responses:
+        '200':
+          description: List of repositories
+  /repos/switch:
+    post:
+      summary: Switch active repository context
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Repository name to activate
+      responses:
+        '200':
+          description: Context switched
+        '404':
+          description: Repository not found
+  /repos/{name}/origin:
+    get:
+      summary: Get the origin URL for a repository
+      parameters:
+        - in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Origin URL returned
+        '404':
+          description: Repository not found
+  /repos/{name}/commit:
+    post:
+      summary: Commit changes to a repository
+      parameters:
+        - in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: Commit message
+      responses:
+        '201':
+          description: Commit successful
+        '404':
+          description: Repository not found
