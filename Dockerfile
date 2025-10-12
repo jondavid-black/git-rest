@@ -15,7 +15,7 @@ WORKDIR /app
 COPY . /app
 
 # Install uv and project dependencies
-RUN pip install uv && uv pip install -e .[dev]
+RUN pip install uv && uv pip install --system -e .[dev]
 
 # Expose port for Gunicorn
 EXPOSE 8000
