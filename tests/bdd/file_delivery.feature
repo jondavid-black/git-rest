@@ -17,14 +17,12 @@ Feature: File delivery
     Then the response status should be 200
     And the response should contain file content
 
-  Scenario: Retrieve large file (redirect)
-  Given a large file named "bigfile.bin" exists in "users/alice/git-rest-test"
-  When I GET /users/alice/repos/git-rest-test/files/bigfile.bin
+  Scenario: Retrieve and download large file via secure URL
+    Given a large file named "bigfile.bin" exists in "users/alice/git-rest-test"
+    When I GET /users/alice/repos/git-rest-test/files/bigfile.bin
     Then the response status should be 302
     And the response should contain "url"
-
-  Scenario: Download file via secure URL
-  Given a secure URL for "bigfile.bin" in "users/alice/git-rest-test"
+    Given a secure URL for "bigfile.bin" in "users/alice/git-rest-test"
     When I GET the secure URL
     Then the response status should be 200
     And the response should contain file content

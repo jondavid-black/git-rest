@@ -11,12 +11,11 @@ The full OpenAPI contract is available at [specs/001-develop-git-rest/contracts/
 - Set the environment variable `GIT_REST_SECRET_KEY` to a strong, random value in production
 - Optionally set `GIT_REST_WORKDIR` to control the repository storage location
 
+## User Isolation & Multi-Repo Support
+- All endpoints are scoped by user. Replace `{user_id}` with the authenticated user's ID.
+- Each user can manage multiple repositories, fully isolated from other users.
 
-
-
-## User-Scoped Repository Management Endpoints
-
-All endpoints are now scoped by user. Replace `{user_id}` with the authenticated user's ID.
+## Repository Management Endpoints
 
 ### `GET /users/{user_id}/repos`
 List all repositories for the user.
@@ -36,7 +35,7 @@ Clone a new repository for the user.
 ```
 **Response:**
 - 201 Created: JSON object of the new repository
-- 400 Bad Request: Error message
+- 400 Bad Request: Error message (e.g., name collision, network failure)
 
 ### `GET /users/{user_id}/repos/{repo_id}`
 Get details for a specific repository.
@@ -52,7 +51,16 @@ Switch the active repository context for the user.
 - 200 OK: Confirmation message and repository object
 - 404 Not Found: Error message
 
+### `GET /users/{user_id}/repos/{repo_id}/origin`
+Get the remote/origin URL for a repository.
 
+**Response:**
+- 200 OK: `{ "origin": "https://github.com/example/repo.git" }`
+- 404 Not Found: Error message
+
+## Error Handling
+- 400 Bad Request: Name collision, network failure, detached HEAD on commit, etc.
+- 404 Not Found: Non-existent repository or resource
 
 ## User-Scoped Branch Management Endpoints
 

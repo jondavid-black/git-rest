@@ -85,13 +85,24 @@ The general workflow for starting new work should use the Speckit workflow in th
 
 Completing these commands should establish a detailed plan to guide GitHub Copilot through the implementation phases.
 Occasionally you may need to nudge the AI as you work through this process by answering questions or providing clarification.
-Before proceeding open up any files in the `/specs/<item>/checklists` folder to ensure everything is marked complete.
+Before proceeding review any files in the `/specs/<item>/checklists` folder to ensure everything is marked complete.
 Once you have completed these AI commands it is recommended to commit and push before beginning implementation.
 Note that this process will automatically create and work within a new branch based on the first few words you enter into the high level requirements text.
 I like to create a new PR at this time so I can easily monitor CI throughout the implementation process.
 
 To implement the plan use the `/speckit.implement` command in the GitHub Copilot Agent.
-This will cause the AI to step through the plan and associated
+This will cause the AI to step through the generated plan and tasks.
+The AI will fequently ask you questions such as 'do you want to begin the first implementation phase' or 'do you want to proceed'.
+I've found simply responding with 'Yes, begin the first phase' or 'Yes, proceed' results in very good outcomes.
+I've found it is sometimes best to review and approve commands individually as the AI works.
+This allows you to tweak things (i.e. add `uv run` in front of a command) to avoid unnecessary errors along the way that can spiral out of control.
+When the AI pauses and asks if you'd like to proceed, be sure to review the changes it has made up to that point and click the `Keep` button before telling the AI to proceed.
+Occasionally the GitHub Copilot may pause and say something to the effect of 'Continue to iterate?'
+As long as the AI hasn't fallen into a non-productive loop just click 'Continue'.
+The end result is the AI writing almost all the code with you occasionally typing 'Yes, proceed' to push it along.
+
+The final step tends to focus on testing and QA steps.
+This is where you usually have to get more involved: running linting and formatting, running unit and BDD tests manually, pasting errors back into the AI to generate corrections, etc.
 
 ---
 For more, see the API docs and OpenAPI spec.

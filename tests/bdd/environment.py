@@ -64,3 +64,14 @@ def after_feature(context, feature):
     tmp_repo_path = "/tmp/git-rest"
     if os.path.exists(tmp_repo_path):
         shutil.rmtree(tmp_repo_path)
+
+
+# Clean up user repos before each scenario to ensure a clean state
+def before_scenario(context, scenario):
+    import os
+    import shutil
+
+    user_id = getattr(context, "user_id", "alice")
+    user_repo_path = os.path.join("/tmp/git-rest", user_id)
+    if os.path.exists(user_repo_path):
+        shutil.rmtree(user_repo_path)

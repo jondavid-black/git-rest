@@ -36,7 +36,14 @@ def then_response_should_contain_file_content(context):
 @given('a secure URL for "{filename}" in "users/{user_id}/{repo_id}"')
 def given_secure_url_for_file(context, filename, user_id, repo_id):
     resp = requests.get(f"{API_URL}/users/{user_id}/repos/{repo_id}/files/{filename}")
-    data = resp.json()
+    try:
+        data = resp.json()
+    except Exception:
+        raise AssertionError(
+            "Response is not JSON; cannot extract secure URL."
+        ) from None
+    if "url" not in data:
+        raise AssertionError(f"Response JSON does not contain 'url' key. Got: {data}")
     context.secure_url = f"{API_URL}{data['url']}"
 
 

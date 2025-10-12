@@ -85,7 +85,7 @@ def get_file_content(user_id, repo_id, file_path):
             parsed = urlparse(secure_url)
             qs = parse_qs(parsed.query)
             download_url = f"{download_url}?{urlencode(qs, doseq=True)}"
-            return jsonify({"redirect": True, "url": download_url}), 302
+            return jsonify({"url": download_url}), 302
         return send_file(abs_path, as_attachment=False)
     except Exception as e:
         return jsonify({"error": str(e)}), 400

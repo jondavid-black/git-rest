@@ -27,6 +27,9 @@ def commit_changes(user, repo):
             else store.get_repo(repo)
         )
         git_repo = store._load_git_repo(repo_obj.path)
+        # Check for detached HEAD state
+        if git_repo.head.is_detached:
+            return jsonify({"error": "Cannot commit in detached HEAD state."}), 400
         # Stage all changes
         git_repo.git.add(A=True)
         # Use git.Actor for author

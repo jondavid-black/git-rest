@@ -2,56 +2,47 @@
 
 ## Phase 1: Setup Tasks
 
-- **T001**: Ensure Python 3.12+ and all dependencies (Flask, gitpython, pydantic, pytest, Behave, uv, ruff) are installed. [P]
-- **T002**: Verify test repos are accessible: https://github.com/jondavid-black/git-rest-test and https://github.com/jondavid-black/git-rest-test-other. [P]
-- **T003**: Confirm filesystem-based per-user repo storage is configured. [P]
-- **T004**: Prepare Behave BDD test environment in `tests/bdd/`.
+- [X] T001: Ensure Python 3.12+ and all dependencies (Flask, gitpython, pydantic, pytest, Behave, uv, ruff) are installed. [P]
+- [X] T002: Verify test repos are accessible: https://github.com/jondavid-black/git-rest-test and https://github.com/jondavid-black/git-rest-test-other. [P]
+- [X] T003: Confirm filesystem-based per-user repo storage is configured. [P]
+- [X] T004: Prepare Behave BDD test environment in `tests/bdd/`.
 
 ## Phase 2: Foundational Tasks
 
-- **T005**: Implement or verify user context/session management for active repo switching.
-- **T006**: Ensure error handling for repo name collisions and invalid operations is in place.
+- [X] T005: Implement or verify user context/session management for active repo switching.
+- [X] T006: Ensure error handling for repo name collisions and invalid operations is in place.
 
 ## Phase 3: User Story 1 - Clone Multiple Repositories (P1)
 
 - **US1 Goal**: User can clone both provided repositories and see them as independent entities.
 - **Independent Test**: Clone both repos, list, and verify both are present and independent.
-- **T007**: [P] Add BDD scenario: clone `git-rest-test` via API (tests/bdd/).
-- **T008**: [P] Add BDD scenario: clone `git-rest-test-other` via API (tests/bdd/).
-- **T009**: [P] Add BDD scenario: list all repos and verify both are present (tests/bdd/).
-- **T010**: [P] Implement `/repos/clone` endpoint (src/git_rest/api/).
-- **T011**: [P] Implement `/repos` list endpoint (src/git_rest/api/).
-- **T012**: [P] Implement repo model logic for independent storage (src/git_rest/models/).
-- **T013**: [P] Implement repo service logic for cloning and listing (src/git_rest/services/).
+**T007**: [X] Add BDD scenario: clone `git-rest-test` via API (tests/bdd/).
+**T008**: [X] Add BDD scenario: clone `git-rest-test-other` via API (tests/bdd/).
+**T009**: [X] Add BDD scenario: list all repos and verify both are present (tests/bdd/).
+**T010**: [X] Implement `/repos/clone` endpoint (src/git_rest/api/).
+**T011**: [X] Implement `/repos` list endpoint (src/git_rest/api/).
+**T012**: [X] Implement repo model logic for independent storage (src/git_rest/models/).
+**T013**: [X] Implement repo service logic for cloning and listing (src/git_rest/services/).
 - **T014**: Integrate and validate all US1 tests pass.
-
+**T014**: [X] Integrate and validate all US1 tests pass.
 ## Phase 4: User Story 2 - Switch Between Managed Repositories (P2)
 
-- **US2 Goal**: User can switch active context between managed repos.
-- **Independent Test**: Switch context and verify subsequent actions apply only to selected repo.
-- **T015**: [P] Add BDD scenario: switch context to `git-rest-test` (tests/bdd/).
-- **T016**: [P] Add BDD scenario: switch context to `git-rest-test-other` (tests/bdd/).
-- **T017**: [P] Implement `/repos/switch` endpoint (src/git_rest/api/).
-- **T018**: [P] Implement context/session logic for switching (src/git_rest/services/).
-- **T019**: Integrate and validate all US2 tests pass.
-
+**T015**: [X] Add BDD scenario: switch context to `git-rest-test` (tests/bdd/).
+**T016**: [X] Add BDD scenario: switch context to `git-rest-test-other` (tests/bdd/).
+**T017**: [X] Implement `/repos/switch` endpoint (src/git_rest/api/).
+**T018**: [X] Implement context/session logic for switching (src/git_rest/services/).
 ## Phase 5: User Story 3 - Isolated Commits and Repository State (P3)
 
-- **US3 Goal**: Commits to one repo do not affect the other.
-- **Independent Test**: Commit to one repo, verify no changes in the other.
-- **T020**: [P] Add BDD scenario: commit to `git-rest-test` and verify isolation (tests/bdd/).
-- **T021**: [P] Add BDD scenario: commit to `git-rest-test-other` and verify isolation (tests/bdd/).
-- **T022**: [P] Implement `/repos/{name}/commit` endpoint (src/git_rest/api/).
-- **T023**: [P] Implement commit logic with repo isolation (src/git_rest/services/).
+**T020**: [X] Add BDD scenario: commit to `git-rest-test` and verify isolation (tests/bdd/).
+**T021**: [X] Add BDD scenario: commit to `git-rest-test-other` and verify isolation (tests/bdd/).
+- **T022**: [X] Implement `/repos/{name}/commit` endpoint (src/git_rest/api/).
+- **T023**: [X] Implement commit logic with repo isolation (src/git_rest/services/).
 - **T024**: Integrate and validate all US3 tests pass.
 
 ## Phase 6: User Story 4 - Repository Origin Integrity (P4)
 
-- **US4 Goal**: The origin of each repo is correctly maintained and can be queried.
-- **Independent Test**: Query origin for each repo and verify correct URL.
-- **T025**: [P] Add BDD scenario: query origin for `git-rest-test` (tests/bdd/).
-- **T026**: [P] Add BDD scenario: query origin for `git-rest-test-other` (tests/bdd/).
-- **T027**: [P] Implement `/repos/{name}/origin` endpoint (src/git_rest/api/).
+**T025**: [X] Add BDD scenario: query origin for `git-rest-test` (tests/bdd/).
+**T026**: [X] Add BDD scenario: query origin for `git-rest-test-other` (tests/bdd/).
 - **T028**: [P] Implement origin query logic (src/git_rest/services/).
 - **T029**: Integrate and validate all US4 tests pass.
 
