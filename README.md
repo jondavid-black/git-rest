@@ -76,7 +76,7 @@ Git-REST development heavily relies on GenAI technology.
 This repo uses [GitHub Copilot](https://github.com/features/copilot) and the [GitHub Speckit](https://github.com/github/spec-kit) extensions.
 The general workflow for starting new work should use the Speckit workflow in the GitHub Copilot Agent:
 - `/speckit.specify <Your high level requirements here>`
-- `/speckit.clarity`
+- `/speckit.clarify`
 - `/speckit.plan`
 - `/speckit.tasks`
 - `/speckit.analyze`
