@@ -45,6 +45,13 @@ def before_feature(context, feature):
             print("Environment exception: " + str(e))
             time.sleep(0.2)
     else:
+        # Print server stdout and stderr for debugging
+        try:
+            out, err = context.api_process.communicate(timeout=2)
+        except Exception:
+            out, err = '', ''
+        print("\n[BDD DEBUG] Server stdout:\n", out)
+        print("\n[BDD DEBUG] Server stderr:\n", err)
         raise RuntimeError("API server did not start in time.")
 
 
