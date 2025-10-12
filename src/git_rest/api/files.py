@@ -24,6 +24,34 @@ def get_user_store(user_id):
 @files_bp.route("/", methods=["GET"])
 @audit_repo_action("list_files")
 def list_files(user_id, repo_id):
+    """
+    List all files and directories in the specified repository for a user.
+    ---
+    parameters:
+      - in: path
+        name: user_id
+        required: true
+        schema:
+          type: string
+        description: The user identifier.
+      - in: path
+        name: repo_id
+        required: true
+        schema:
+          type: string
+        description: The repository identifier.
+      - in: query
+        name: path
+        required: false
+        schema:
+          type: string
+        description: The relative path within the repository to list.
+    responses:
+      200:
+        description: A list of files and directories in the repository.
+      404:
+        description: Repository or path not found.
+    """
     store = get_user_store(user_id)
     rel_path = request.args.get("path", "")
     try:
@@ -55,6 +83,34 @@ def list_files(user_id, repo_id):
 @files_bp.route("/<path:file_path>", methods=["GET"])
 @audit_repo_action("get_file_content")
 def get_file_content(user_id, repo_id, file_path):
+    """
+    Retrieve the content of a specific file in the repository for a user.
+    ---
+    parameters:
+      - in: path
+        name: user_id
+        required: true
+        schema:
+          type: string
+        description: The user identifier.
+      - in: path
+        name: repo_id
+        required: true
+        schema:
+          type: string
+        description: The repository identifier.
+      - in: path
+        name: file_path
+        required: true
+        schema:
+          type: string
+        description: The path to the file within the repository.
+    responses:
+      200:
+        description: The file content.
+      404:
+        description: File or repository not found.
+    """
     store = get_user_store(user_id)
     try:
         repo = store.get_repo(repo_id)
@@ -95,6 +151,34 @@ def get_file_content(user_id, repo_id, file_path):
 @files_bp.route("/<path:file_path>/download", methods=["GET"])
 @audit_repo_action("download_file_secure")
 def download_file_secure(user_id, repo_id, file_path):
+    """
+    Download a file from the repository using a secure, time-limited URL for a user.
+    ---
+    parameters:
+      - in: path
+        name: user_id
+        required: true
+        schema:
+          type: string
+        description: The user identifier.
+      - in: path
+        name: repo_id
+        required: true
+        schema:
+          type: string
+        description: The repository identifier.
+      - in: path
+        name: file_path
+        required: true
+        schema:
+          type: string
+        description: The path to the file within the repository.
+    responses:
+      200:
+        description: The file is downloaded using a secure URL.
+      404:
+        description: File or repository not found.
+    """
     store = get_user_store(user_id)
     expires = request.args.get("expires")
     token = request.args.get("token")

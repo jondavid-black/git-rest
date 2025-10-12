@@ -22,6 +22,28 @@ def get_user_store(user_id):
 @branches_bp.route("/", methods=["GET"])
 @audit_repo_action("list_branches")
 def list_branches(user_id, repo_id):
+    """
+    List all branches in the specified repository for a user.
+    ---
+    parameters:
+      - in: path
+        name: user_id
+        required: true
+        schema:
+          type: string
+        description: The user identifier.
+      - in: path
+        name: repo_id
+        required: true
+        schema:
+          type: string
+        description: The repository identifier.
+    responses:
+      200:
+        description: A list of branches in the repository.
+      404:
+        description: Repository not found or error occurred.
+    """
     store = get_user_store(user_id)
     try:
         repo = store.get_repo(repo_id)
@@ -33,6 +55,37 @@ def list_branches(user_id, repo_id):
 @branches_bp.route("/", methods=["POST"])
 @audit_repo_action("create_branch")
 def create_branch(user_id, repo_id):
+    """
+    Create a new branch in the specified repository for a user.
+    ---
+    parameters:
+      - in: path
+        name: user_id
+        required: true
+        schema:
+          type: string
+        description: The user identifier.
+      - in: path
+        name: repo_id
+        required: true
+        schema:
+          type: string
+        description: The repository identifier.
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The name of the new branch.
+    responses:
+      201:
+        description: Branch created successfully.
+      400:
+        description: Invalid input or error occurred.
+    """
     store = get_user_store(user_id)
     data = request.get_json()
     schema = BranchNameSchema(**data)
@@ -56,6 +109,34 @@ def create_branch(user_id, repo_id):
 @branches_bp.route("/<branch>", methods=["POST"])
 @audit_repo_action("switch_branch")
 def switch_branch(user_id, repo_id, branch):
+    """
+    Switch to a different branch in the specified repository for a user.
+    ---
+    parameters:
+      - in: path
+        name: user_id
+        required: true
+        schema:
+          type: string
+        description: The user identifier.
+      - in: path
+        name: repo_id
+        required: true
+        schema:
+          type: string
+        description: The repository identifier.
+      - in: path
+        name: branch
+        required: true
+        schema:
+          type: string
+        description: The branch name to switch to.
+    responses:
+      200:
+        description: Switched to the specified branch.
+      404:
+        description: Branch or repository not found.
+    """
     store = get_user_store(user_id)
     try:
         repo = store.get_repo(repo_id)
@@ -73,6 +154,34 @@ def switch_branch(user_id, repo_id, branch):
 @branches_bp.route("/<branch>", methods=["DELETE"])
 @audit_repo_action("delete_branch")
 def delete_branch(user_id, repo_id, branch):
+    """
+    Delete a branch from the specified repository for a user.
+    ---
+    parameters:
+      - in: path
+        name: user_id
+        required: true
+        schema:
+          type: string
+        description: The user identifier.
+      - in: path
+        name: repo_id
+        required: true
+        schema:
+          type: string
+        description: The repository identifier.
+      - in: path
+        name: branch
+        required: true
+        schema:
+          type: string
+        description: The branch name to delete.
+    responses:
+      200:
+        description: Branch deleted successfully.
+      404:
+        description: Branch or repository not found.
+    """
     store = get_user_store(user_id)
     try:
         repo = store.get_repo(repo_id)

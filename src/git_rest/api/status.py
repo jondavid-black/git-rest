@@ -13,6 +13,28 @@ status_bp = Blueprint(
 @status_bp.route("/", methods=["GET"])
 @audit_repo_action("get_repo_status")
 def get_repo_status(user_id, repo_id):
+    """
+    Get the status of a repository for a user.
+    ---
+    parameters:
+      - in: path
+        name: user_id
+        required: true
+        schema:
+          type: string
+        description: The user identifier.
+      - in: path
+        name: repo_id
+        required: true
+        schema:
+          type: string
+        description: The repository identifier.
+    responses:
+      200:
+        description: The status of the repository, including branch, cleanliness, and file status.
+      404:
+        description: Repository not found or error occurred.
+    """
     base_dir = os.environ.get("GIT_REST_WORKDIR", "/tmp/git-rest")
     user_dir = os.path.join(base_dir, user_id)
     store = RepositoryStore(base_dir=user_dir)

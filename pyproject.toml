@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "MIT" }
 dependencies = [
+    "flasgger>=0.9.7.1",
     "flask>=3.1.2",
     "gitpython>=3.1.45",
     "gunicorn>=23.0.0",
@@ -41,3 +42,9 @@ testpaths = [
 [tool.behave]
 paths = ["tests/bdd"]
 format = ["pretty"]
+
+[dependency-groups]
+dev = [
+    "playwright>=1.55.0",
+    "pytest-xdist>=3.8.0",
+]

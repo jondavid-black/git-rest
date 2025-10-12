@@ -11,6 +11,40 @@ store = RepositoryStore()
 @diff_bp.route("/", methods=["GET"])
 @audit_repo_action("get_diff")
 def get_diff(user, repo):
+    """
+    Get the diff between two commits or the working tree for a user's repository.
+    ---
+    parameters:
+      - in: path
+        name: user
+        required: true
+        schema:
+          type: string
+        description: The user identifier.
+      - in: path
+        name: repo
+        required: true
+        schema:
+          type: string
+        description: The repository identifier.
+      - in: query
+        name: a
+        required: false
+        schema:
+          type: string
+        description: The first commit hash or ref.
+      - in: query
+        name: b
+        required: false
+        schema:
+          type: string
+        description: The second commit hash or ref.
+    responses:
+      200:
+        description: The diff output between the specified commits or working tree.
+      400:
+        description: Error occurred or invalid input.
+    """
     commit_a = request.args.get("a")
     commit_b = request.args.get("b")
     try:
