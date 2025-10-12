@@ -17,8 +17,8 @@ def temp_repo_dir():
 
 def test_commit_and_diff(temp_repo_dir):
     store = RepositoryStore(base_dir=temp_repo_dir)
-    repo_url = "https://github.com/octocat/Hello-World.git"
-    repo_name = "hello-world"
+    repo_url = "https://github.com/jondavid-black/git-rest-test.git"
+    repo_name = "git-rest-test"
     repo = store.clone_repo(repo_name, repo_url)
     git_repo = store._load_git_repo(repo.path)
 

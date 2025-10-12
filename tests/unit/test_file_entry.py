@@ -17,8 +17,8 @@ def temp_repo_dir():
 
 def test_file_listing_and_content(temp_repo_dir):
     store = RepositoryStore(base_dir=temp_repo_dir)
-    repo_url = "https://github.com/octocat/Hello-World.git"
-    repo_name = "hello-world"
+    repo_url = "https://github.com/jondavid-black/git-rest-test.git"
+    repo_name = "git-rest-test"
     repo = store.clone_repo(repo_name, repo_url)
     repo_path = repo.path
     # Create a small file

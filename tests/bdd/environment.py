@@ -7,6 +7,7 @@ import requests
 def before_feature(context, feature):
     # Start the API server using the 'git-rest' CLI script
     import os
+
     workdir = "./test_working_dir"
     os.makedirs(workdir, exist_ok=True)
     context.api_process = subprocess.Popen(
@@ -39,7 +40,7 @@ def before_feature(context, feature):
         try:
             out, err = context.api_process.communicate(timeout=2)
         except Exception:
-            out, err = '', ''
+            out, err = "", ""
         print("\n[BDD DEBUG] Server stdout:\n", out)
         print("\n[BDD DEBUG] Server stderr:\n", err)
         raise RuntimeError("API server did not start in time.")

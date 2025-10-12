@@ -21,16 +21,29 @@ def step_impl_repo_exists(context, repo_name):
     if not os.path.exists(repo_path):
         os.makedirs(repo_path, exist_ok=True)
         subprocess.run(["git", "init"], cwd=repo_path, check=True)
+
         # Set test user identity for git commits if not already set
         def git_config_get(key):
             import subprocess
-            result = subprocess.run(["git", "config", "--get", key], cwd=repo_path, capture_output=True, text=True)
+
+            result = subprocess.run(
+                ["git", "config", "--get", key],
+                cwd=repo_path,
+                capture_output=True,
+                text=True,
+            )
             return result.stdout.strip()
 
         if not git_config_get("user.email"):
-            subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=repo_path, check=True)
+            subprocess.run(
+                ["git", "config", "user.email", "test@example.com"],
+                cwd=repo_path,
+                check=True,
+            )
         if not git_config_get("user.name"):
-            subprocess.run(["git", "config", "user.name", "Test User"], cwd=repo_path, check=True)
+            subprocess.run(
+                ["git", "config", "user.name", "Test User"], cwd=repo_path, check=True
+            )
         # Create an initial commit so the default branch exists
         with open(os.path.join(repo_path, "README.md"), "w") as f:
             f.write(f"# {repo_name}\n")
