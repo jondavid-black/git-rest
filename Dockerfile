@@ -25,4 +25,4 @@ ENV GIT_REST_SECRET_KEY=changeme-super-secret-key
 ENV GIT_REST_WORKDIR=/data/repos
 
 # Entrypoint: Gunicorn with Flask app
-CMD ["uv", "run", "gunicorn", "-b", "0.0.0.0:8000", "src.git_rest.main:app"]
+CMD ["uv", "run", "gunicorn", "-b", "0.0.0.0:8000", "src.git_rest.app:create_app()"]
