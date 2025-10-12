@@ -12,19 +12,15 @@ Feature: Branch management
     Then the response status should be 200
     And the response should be a list
 
-  Scenario: Create a new branch
-  When I POST to /users/alice/repos/git-rest-test/branches with name "feature-x"
+  Scenario: Create, switch, and delete a branch
+    When I POST to /users/alice/repos/git-rest-test/branches with name "feature-x"
     Then the response status should be 201
     And the response should be a list
-  And the response should contain a branch named "feature-x"
-
-  Scenario: Switch to a branch
-  When I POST to /users/alice/repos/git-rest-test/branches/feature-x
+    And the response should contain a branch named "feature-x"
+    When I POST to /users/alice/repos/git-rest-test/branches/feature-x
     Then the response status should be 200
     And the response should contain "message": "Switched to branch 'feature-x'"
-
-  Scenario: Delete a branch
-  When I DELETE /users/alice/repos/git-rest-test/branches/feature-x
+    When I DELETE /users/alice/repos/git-rest-test/branches/feature-x
     Then the response status should be 200
     And the response should be a list
     And the response should not contain a branch named "feature-x"

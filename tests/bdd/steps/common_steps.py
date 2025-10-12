@@ -6,6 +6,12 @@ from behave import given, then
 API_URL = "http://localhost:5000"
 
 
+@then('the response should contain "error"')
+def step_impl_response_should_contain_error(context):
+    data = context.response.json()
+    assert "error" in data
+
+
 @given("the API is running")
 def step_impl_api_running(context):
     resp = requests.get(f"{API_URL}/healthz")

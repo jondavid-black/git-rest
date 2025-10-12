@@ -27,6 +27,7 @@ def test_commit_changes_nominal(client):
         mock_store.get_user_repo.return_value = mock_repo_obj
         mock_git_repo = MagicMock()
         mock_store._load_git_repo.return_value = mock_git_repo
+        mock_git_repo.head.is_detached = False  # Ensure not in detached HEAD state
         mock_commit = MagicMock()
         mock_commit.hexsha = "abc123"
         mock_commit.author.name = payload["author"]
