@@ -1,0 +1,18 @@
+openapi: 3.0.2
+info:
+  title: git-rest API Interactive Demo
+  version: 1.0.0
+  description: |
+    Interactive API documentation and testing UI for all Flask endpoints. Each endpoint includes a description and usage information. The demo UI is enabled or disabled via environment variable.
+servers:
+  - url: http://localhost:5000
+paths:
+  /apidocs:
+    get:
+      summary: Interactive API documentation UI
+      description: Returns the interactive Swagger UI for all API endpoints if enabled by environment variable.
+      responses:
+        '200':
+          description: Swagger UI HTML page
+        '403':
+          description: Demo UI is disabled

@@ -9,6 +9,28 @@ origin_bp = Blueprint(
 
 @origin_bp.route("/", methods=["GET"])
 def get_origin(user_id, repo_id):
+    """
+    Get the origin remote URL for the specified repository for a user.
+    ---
+    parameters:
+      - in: path
+        name: user_id
+        required: true
+        schema:
+          type: string
+        description: The user identifier.
+      - in: path
+        name: repo_id
+        required: true
+        schema:
+          type: string
+        description: The repository identifier.
+    responses:
+      200:
+        description: The origin remote URL for the repository.
+      404:
+        description: Repository not found or error occurred.
+    """
     store = get_user_store(user_id)
     try:
         repo = store.get_repo(repo_id)

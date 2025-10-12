@@ -14,6 +14,40 @@ store = RepositoryStore()
 @commit_bp.route("/", methods=["POST"])
 @audit_repo_action("commit_changes")
 def commit_changes(user, repo):
+    """
+    Commit staged changes to the specified repository for a user.
+    ---
+    parameters:
+      - in: path
+        name: user
+        required: true
+        schema:
+          type: string
+        description: The user identifier.
+      - in: path
+        name: repo
+        required: true
+        schema:
+          type: string
+        description: The repository identifier.
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: The commit message.
+            author:
+              type: string
+              description: The author name for the commit.
+    responses:
+      200:
+        description: Commit created successfully.
+      400:
+        description: Invalid input, detached HEAD, or error occurred.
+    """
     data = request.get_json()
     message = data.get("message")
     author_name = data.get("author")

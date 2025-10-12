@@ -22,6 +22,20 @@ def get_user_store(user_id):
 @repos_bp.route("/", methods=["GET"])
 @audit_repo_action("list_repos")
 def list_repos(user_id):
+    """
+    List all repositories for a user.
+    ---
+    parameters:
+      - in: path
+        name: user_id
+        required: true
+        schema:
+          type: string
+        description: The user identifier.
+    responses:
+      200:
+        description: A list of repositories for the user.
+    """
     store = get_user_store(user_id)
     repos = store.list_repos()
     return jsonify([repo.dict() for repo in repos])
@@ -30,6 +44,34 @@ def list_repos(user_id):
 @repos_bp.route("/", methods=["POST"])
 @audit_repo_action("clone_repo")
 def clone_repo(user_id):
+    """
+    Clone a new repository for a user from a remote URL.
+    ---
+    parameters:
+      - in: path
+        name: user_id
+        required: true
+        schema:
+          type: string
+        description: The user identifier.
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The name for the new repository.
+            url:
+              type: string
+              description: The remote repository URL to clone.
+    responses:
+      201:
+        description: Repository cloned successfully.
+      400:
+        description: Invalid input or error occurred.
+    """
     store = get_user_store(user_id)
     data = request.get_json()
     schema = RepoNameSchema(**data)
@@ -47,6 +89,28 @@ def clone_repo(user_id):
 @repos_bp.route("/<repo_id>", methods=["GET"])
 @audit_repo_action("get_repo_details")
 def get_repo_details(user_id, repo_id):
+    """
+    Get details for a specific repository for a user.
+    ---
+    parameters:
+      - in: path
+        name: user_id
+        required: true
+        schema:
+          type: string
+        description: The user identifier.
+      - in: path
+        name: repo_id
+        required: true
+        schema:
+          type: string
+        description: The repository identifier.
+    responses:
+      200:
+        description: Repository details.
+      404:
+        description: Repository not found or error occurred.
+    """
     store = get_user_store(user_id)
     try:
         repo = store.get_repo(repo_id)
@@ -59,6 +123,28 @@ def get_repo_details(user_id, repo_id):
 @repos_bp.route("/<repo_id>", methods=["POST"])
 @audit_repo_action("switch_repo")
 def switch_repo(user_id, repo_id):
+    """
+    Switch the active repository for a user (dummy context for now).
+    ---
+    parameters:
+      - in: path
+        name: user_id
+        required: true
+        schema:
+          type: string
+        description: The user identifier.
+      - in: path
+        name: repo_id
+        required: true
+        schema:
+          type: string
+        description: The repository identifier.
+    responses:
+      200:
+        description: Switched to the specified repository.
+      404:
+        description: Repository not found or error occurred.
+    """
     store = get_user_store(user_id)
     try:
         repo = store.get_repo(repo_id)
