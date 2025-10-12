@@ -19,8 +19,7 @@ jobs:
         run: pip install uv
       - name: Create uv virtual environment
         run: uv venv
-      - name: Activate uv virtual environment
-        run: source .venv/bin/activate
+      # Removed manual venv activation; uv handles this automatically
       - name: Install dependencies
         run: uv pip install -e .[dev]
       - name: Lint with ruff
@@ -29,6 +28,12 @@ jobs:
         run: uv run ruff format src tests
       - name: Run unit tests (pytest)
         run: uv run pytest
+      - name: Debug - List installed packages and entry points
+        run: |
+          uv run pip list
+          uv run pip show git-rest
+          uv run which git-rest-debug || true
+          ls -l .venv/bin/
       - name: Run BDD tests (behave)
         run: uv run behave
       - name: Build documentation (Mkdocs)

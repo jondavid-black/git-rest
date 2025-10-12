@@ -22,6 +22,16 @@ def before_feature(context, feature):
         stderr=subprocess.PIPE,
         text=True,
     )
+    time.sleep(1)
+    context.api_process.terminate()
+    try:
+        stdout, stderr = context.api_process.communicate(timeout=10)
+    except Exception as e:
+        print("Environment exception during initial start/stop: " + str(e))
+        stdout, stderr = None, None
+    print("\n--- API SERVER START STDOUT ---\n" + (stdout or "<no stdout>"))
+    print("\n--- API SERVER START STDERR ---\n" + (stderr or "<no stderr>"))
+
     # Wait for the server to be up
     for _ in range(20):
         try:
