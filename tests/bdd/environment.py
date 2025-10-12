@@ -6,13 +6,16 @@ import requests
 
 def before_feature(context, feature):
     # Start the API server using the 'git-rest' CLI script
+    import os
+    workdir = "./test_working_dir"
+    os.makedirs(workdir, exist_ok=True)
     context.api_process = subprocess.Popen(
         [
             "uv",
             "run",
             "git-rest-debug",
             "--workdir",
-            "./test_working_dir",
+            workdir,
             "--host",
             "0.0.0.0",
             "--port",
