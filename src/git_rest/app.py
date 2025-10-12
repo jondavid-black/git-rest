@@ -19,6 +19,7 @@ def create_app():
     from .api.files import files_bp
     from .api.origin import origin_bp
     from .api.repos import repos_bp
+    from .api.status import status_bp
 
     app.register_blueprint(repos_bp)
     app.register_blueprint(branches_bp)
@@ -26,6 +27,7 @@ def create_app():
     app.register_blueprint(diff_bp)
     app.register_blueprint(files_bp)
     app.register_blueprint(origin_bp)
+    app.register_blueprint(status_bp)
 
     # Register auth/login endpoint
     app.add_url_rule("/login", "login", login, methods=["POST"])

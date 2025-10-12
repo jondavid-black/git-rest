@@ -58,6 +58,21 @@ Feature: Repository management
     Then the response status should be 200
     And the response should contain the correct origin for "git-rest-test-other"
 
+  Scenario: Clone two repos into the same environment and switch between them without errors
+    Given the API is running
+    And I have a clean environment
+    When I POST to /users/alice/repos with name "git-rest-test" and url "https://github.com/jondavid-black/git-rest-test.git"
+    And I POST to /users/alice/repos with name "git-rest-test-other" and url "https://github.com/jondavid-black/git-rest-test-other.git"
+    Then both repositories "git-rest-test" and "git-rest-test-other" should exist for user "alice"
+    When I POST to /users/alice/repos/git-rest-test
+    And I GET /users/alice/repos/git-rest-test/status
+    Then the response status should be 200
+    And the response should contain the correct status for "git-rest-test"
+    When I POST to /users/alice/repos/git-rest-test-other
+    And I GET /users/alice/repos/git-rest-test-other/status
+    Then the response status should be 200
+    And the response should contain the correct status for "git-rest-test-other"
+
 
   # --- Edge Case Scenarios ---
 

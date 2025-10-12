@@ -1,7 +1,50 @@
+# --- Multi-repo scenario custom steps ---
+import os
+import shutil
 import time
 
 import requests
-from behave import then, when
+from behave import given, then, when
+
+
+@given("I have a clean environment")
+def given_i_have_a_clean_environment(context):
+    # Remove /tmp/git-rest/alice if it exists
+    user_id = getattr(context, "user_id", "alice")
+    user_dir = os.path.join("/tmp/git-rest", user_id)
+    if os.path.exists(user_dir):
+        shutil.rmtree(user_dir)
+
+
+@then(
+    'both repositories "git-rest-test" and "git-rest-test-other" should exist for user "alice"'
+)
+def then_both_repos_should_exist_for_user_alice(context):
+    user_id = "alice"
+    base_dir = os.path.join("/tmp/git-rest", user_id)
+    for repo in ["git-rest-test", "git-rest-test-other"]:
+        repo_path = os.path.join(base_dir, repo)
+        assert os.path.isdir(repo_path), f"Repository directory missing: {repo_path}"
+        assert os.path.isdir(os.path.join(repo_path, ".git")), (
+            f".git missing in {repo_path}"
+        )
+
+
+@then('the response should contain the correct status for "git-rest-test"')
+def then_response_should_contain_correct_status_git_rest_test(context):
+    data = context.response.json()
+    # Acceptable keys: branch, commit, is_clean, etc. Adjust as needed.
+    assert "branch" in data, "Missing 'branch' in status response"
+    assert "is_clean" in data, "Missing 'is_clean' in status response"
+    # Optionally check branch name or other details
+
+
+@then('the response should contain the correct status for "git-rest-test-other"')
+def then_response_should_contain_correct_status_git_rest_test_other(context):
+    data = context.response.json()
+    assert "branch" in data, "Missing 'branch' in status response"
+    assert "is_clean" in data, "Missing 'is_clean' in status response"
+
 
 API_URL = "http://localhost:5000"
 DEFAULT_USER = "alice"
