@@ -74,17 +74,24 @@ curl -X POST -H "Authorization: Bearer <token>" -d '{"name": "myrepo", "url": "h
 ## Development Process
 Git-REST development heavily relies on GenAI technology.
 This repo uses GitHub Copilot and the GitHub Speckit extensions.
-The general workflow for starting new work should use the Speckit workflow in the GitHub Agent:
+The general workflow for starting new work should use the Speckit workflow in the GitHub Copilot Agent:
 - `/speckit.specify <Your high level requirements here>`
 - `/speckit.clarity`
 - `/speckit.plan`
 - `/speckit.tasks`
 - `/speckit.analyze`
+- `/speckit.checklist`
+- `Review the checklists.  Mark all items that have been completed.  Ask any questions you need to mark the others.`
 
 Completing these commands should establish a detailed plan to guide GitHub Copilot through the implementation phases.
 Occasionally you may need to nudge the AI as you work through this process by answering questions or providing clarification.
+Before proceeding open up any files in the `/specs/<item>/checklists` folder to ensure everything is marked complete.
 Once you have completed these AI commands it is recommended to commit and push before beginning implementation.
 Note that this process will automatically create and work within a new branch based on the first few words you enter into the high level requirements text.
+I like to create a new PR at this time so I can easily monitor CI throughout the implementation process.
+
+To implement the plan use the `/speckit.implement` command in the GitHub Copilot Agent.
+This will cause the AI to step through the plan and associated
 
 ---
 For more, see the API docs and OpenAPI spec.

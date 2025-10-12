@@ -78,6 +78,13 @@ The origin (remote URL) of each repository is correctly maintained and can be ve
 - How does the system handle network failures during clone or commit operations?
 
 ## Requirements *(mandatory)*
+### Definitions
+
+- **Independent state**: Each repository's data, history, and configuration are stored and managed separately, with no shared state or side effects between repositories.
+- **Isolation**: Actions (such as commits, switches, or queries) performed on one repository have no effect on any other managed repository.
+- **Origin integrity**: The remote URL (origin) for each repository must always match the value provided at clone time, unless explicitly changed by the user.
+- **Correct remote**: The origin URL returned by the API for a repository must match the expected remote URL for that repository.
+- **Clear error message**: An error message that explicitly states the cause of the failure and, where possible, suggests a corrective action (e.g., "Cannot commit: repository is in detached HEAD state. Please checkout a branch before committing.")
 
 ### Functional Requirements
 
