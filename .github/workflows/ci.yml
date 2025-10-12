@@ -28,12 +28,6 @@ jobs:
         run: uv run ruff format src tests
       - name: Run unit tests (pytest)
         run: uv run pytest
-      - name: Debug - List installed packages and entry points
-        run: |
-          uv run pip list
-          uv run pip show git-rest
-          uv run which git-rest-debug || true
-          ls -l .venv/bin/
       - name: Run BDD tests (behave)
         run: uv run behave
       - name: Build documentation (Mkdocs)
