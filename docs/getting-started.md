@@ -20,14 +20,61 @@ Welcome to **git-rest**! This guide will help you get up and running with the mu
 See [Quickstart](specs/001-develop-git-rest/quickstart.md) for full setup instructions.
 
 ## Running the API
-1. Set environment variables as described in [Environment Setup](environment.md).
-2. Start the API server:
-   ```sh
-   uv run flask --app src.git_rest.app run --debug
-   ```
-3. Access the API at `http://localhost:5000/` (default).
 
-For production, see Docker and Nginx setup in the documentation.
+### 1. Set Environment Variables
+See [Environment Setup](environment.md) for details. At minimum, set:
+
+```sh
+export GIT_REST_SECRET_KEY="your-secret-key"
+export GIT_REST_WORKDIR="/absolute/path/to/repos"
+# Optional: Enable interactive API docs UI
+export GIT_REST_UI=1
+# Optional: Enable debug logging
+export GIT_REST_DEBUG=1
+```
+
+Or copy and edit `.env.example`:
+
+```sh
+cp .env.example .env
+# Edit .env with your values
+```
+
+### 2. Run the API (Development)
+
+```sh
+uv run flask --app src.git_rest.app run --debug
+```
+Access at [http://localhost:5000/](http://localhost:5000/)
+
+### 3. Run with Gunicorn (Production)
+
+```sh
+uv run gunicorn -b 0.0.0.0:8000 "src.git_rest.app:create_app()"
+```
+
+Alternatively you can set the environment variables and run the server in a single CLI command.
+
+```sh
+GIT_REST_WORKDIR="/absolute/path/to/repos" GIT_REST_UI=1 uv run gunicorn -b 0.0.0.0:8000 "src.git_rest.app:create_app()"
+```
+
+Access at:
+- BaseURL: [http://localhost:8000/](http://localhost:8000/)
+- Health: [http://localhost:8000/healthz](http://localhost:8000/healthz)
+- API Docs: [http://localhost:8000/apidocs](http://localhost:8000/apidocs)
+
+#### Docker Example
+To run in Docker (see `Dockerfile`):
+
+```sh
+docker build -t git-rest .
+docker run -e GIT_REST_SECRET_KEY=your-secret-key -e GIT_REST_WORKDIR=/data/repos -p 8000:8000 git-rest
+```
+
+---
+
+For advanced production, see Docker and Nginx setup in the documentation.
 
 ## Next Steps
 - See the [How-To Guides](how-to.md) for common workflows.

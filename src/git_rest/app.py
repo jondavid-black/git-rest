@@ -38,6 +38,7 @@ def create_app():
 
             swagger_config = {
                 "headers": [],
+                "title": "git-rest API Docs",  # Set Swagger UI page title
                 "specs": [
                     {
                         "endpoint": "apispec_1",
