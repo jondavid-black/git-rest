@@ -11,6 +11,14 @@ Auto-generated from all feature plans. Last updated: 2025-10-11
 - Python 3.12+ + Flask, flasgger (005-interactive-demo-use)
 - N/A (no persistent storage required for demo) (005-interactive-demo-use)
 
+## Guidance for AI Command Execution
+- When creating a new terminal session remember to activate the Python environment:
+  ```sh
+  source .venv/bin/activate
+  ```
+- When running environment-specific commands such as `pytest`, `ruff`, or similar tools, always use `uv run` as a prefix (e.g., `uv run pytest`, `uv run ruff check .`).
+- This ensures the correct environment and dependencies are used for all test and lint operations.
+
 ## Project Structure
 ```
 src/
