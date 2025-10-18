@@ -32,9 +32,9 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.12+: Follow standard conventions
 
 ## Recent Changes
+- 007-exception-exposure-there: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
 - 006-update-the-api: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
 - 005-interactive-demo-use: Added Python 3.12+ + Flask, flasgger
-- 004-multi-repo-testing: Added Python 3.12+ + Flask, gitpython, pydantic, pytest, Behave, uv, ruff
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->
