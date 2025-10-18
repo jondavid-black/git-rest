@@ -1,6 +1,8 @@
 
 # git-rest
 
+![git-rest icon](docs/img/git-rest-icon.svg)
+
 git-rest is a RESTful API to manage server-side content within a git SCM repository.
 
 ## Features

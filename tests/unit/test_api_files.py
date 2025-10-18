@@ -203,3 +203,145 @@ def test_download_file_secure_internal_error(client):
         assert response.status_code == 400
         data = response.get_json()
         assert "error" in data
+
+
+def test_post_file_content_text_nominal(client):
+    with (
+        patch("git_rest.api.files.get_user_store") as mock_get_user_store,
+        patch("git_rest.api.files.FileSystemIsolation") as mock_fs_iso,
+        patch("git_rest.api.files.FileService") as mock_file_service,
+        patch("git_rest.api.files.open", create=True) as mock_open,
+    ):
+        mock_store = MagicMock()
+        mock_repo = MagicMock()
+        mock_repo.path = "/tmp/repo"
+        mock_store.get_repo.return_value = mock_repo
+        mock_get_user_store.return_value = mock_store
+        mock_fs = MagicMock()
+        mock_fs.safe_join.return_value = "/tmp/repo/file.txt"
+        mock_fs_iso.return_value = mock_fs
+        mock_file_service.return_value.update_file.return_value = True
+        mock_file = MagicMock()
+        mock_open.return_value.__enter__.return_value = mock_file
+        payload = {
+            "type": "text",
+            "content": "Hello, world!",
+        }
+        response = client.post(
+            "/users/testuser/repos/testrepo/files/file.txt",
+            json=payload,
+        )
+        assert response.status_code == 200
+        data = response.get_json()
+        assert "message" in data
+        assert data["message"] == "File updated and staged"
+
+
+def test_post_file_content_binary_nominal(client):
+    import base64
+
+    with (
+        patch("git_rest.api.files.get_user_store") as mock_get_user_store,
+        patch("git_rest.api.files.FileSystemIsolation") as mock_fs_iso,
+        patch("git_rest.api.files.FileService") as mock_file_service,
+        patch("git_rest.api.files.open", create=True) as mock_open,
+    ):
+        mock_store = MagicMock()
+        mock_repo = MagicMock()
+        mock_repo.path = "/tmp/repo"
+        mock_store.get_repo.return_value = mock_repo
+        mock_get_user_store.return_value = mock_store
+        mock_fs = MagicMock()
+        mock_fs.safe_join.return_value = "/tmp/repo/file.bin"
+        mock_fs_iso.return_value = mock_fs
+        mock_file_service.return_value.update_file.return_value = True
+        mock_file = MagicMock()
+        mock_open.return_value.__enter__.return_value = mock_file
+        binary_data = b"\x00\x01\x02"
+        encoded = base64.b64encode(binary_data).decode("utf-8")
+        payload = {
+            "type": "binary",
+            "content": encoded,
+        }
+        response = client.post(
+            "/users/testuser/repos/testrepo/files/file.bin",
+            json=payload,
+        )
+        assert response.status_code == 200
+        data = response.get_json()
+        assert "message" in data
+        assert data["message"] == "File updated and staged"
+
+
+def test_post_file_content_invalid_type(client):
+    with patch("git_rest.api.files.get_user_store") as mock_get_user_store:
+        mock_store = MagicMock()
+        mock_repo = MagicMock()
+        mock_repo.path = "/tmp/repo"
+        mock_store.get_repo.return_value = mock_repo
+        mock_get_user_store.return_value = mock_store
+        payload = {
+            "type": "invalid",
+            "content": "Hello, world!",
+        }
+        response = client.post(
+            "/users/testuser/repos/testrepo/files/file.txt",
+            json=payload,
+        )
+        assert response.status_code == 400
+        data = response.get_json()
+        assert "error" in data
+        assert data["error"] == "Invalid file type"
+
+
+def test_post_file_content_invalid_encoding(client):
+    with patch("git_rest.api.files.get_user_store") as mock_get_user_store:
+        mock_store = MagicMock()
+        mock_repo = MagicMock()
+        mock_repo.path = "/tmp/repo"
+        mock_store.get_repo.return_value = mock_repo
+        mock_get_user_store.return_value = mock_store
+        payload = {
+            "type": "binary",
+            "content": "not_base64!",
+        }
+        response = client.post(
+            "/users/testuser/repos/testrepo/files/file.bin",
+            json=payload,
+        )
+        assert response.status_code == 400
+        data = response.get_json()
+        assert "error" in data
+        assert data["error"] == "Invalid file encoding"
+
+
+def test_post_file_content_concurrent_update(client):
+    with (
+        patch("git_rest.api.files.get_user_store") as mock_get_user_store,
+        patch("git_rest.api.files.FileSystemIsolation") as mock_fs_iso,
+        patch("git_rest.api.files.FileService") as mock_file_service,
+        patch("git_rest.api.files.open", create=True) as mock_open,
+    ):
+        mock_store = MagicMock()
+        mock_repo = MagicMock()
+        mock_repo.path = "/tmp/repo"
+        mock_store.get_repo.return_value = mock_repo
+        mock_get_user_store.return_value = mock_store
+        mock_fs = MagicMock()
+        mock_fs.safe_join.return_value = "/tmp/repo/file.txt"
+        mock_fs_iso.return_value = mock_fs
+        mock_file_service.return_value.update_file.return_value = False
+        mock_file = MagicMock()
+        mock_open.return_value.__enter__.return_value = mock_file
+        payload = {
+            "type": "text",
+            "content": "Hello, world!",
+        }
+        response = client.post(
+            "/users/testuser/repos/testrepo/files/file.txt",
+            json=payload,
+        )
+        assert response.status_code == 409
+        data = response.get_json()
+        assert "error" in data
+        assert data["error"] == "Concurrent update conflict"
