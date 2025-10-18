@@ -44,4 +44,7 @@ def get_origin(user_id, repo_id):
             origin_url = repo.remotes[0].url
         return jsonify({"origin": origin_url})
     except Exception as e:
-        return jsonify({"error": str(e)}), 404
+        from flask import current_app
+
+        current_app.logger.error(f"Exception in commit endpoint: {e}")
+        return jsonify({"error": "An internal error occurred."}), 400

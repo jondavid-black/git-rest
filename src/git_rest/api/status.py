@@ -55,4 +55,7 @@ def get_repo_status(user_id, repo_id):
         }
         return jsonify(result)
     except Exception as e:
-        return jsonify({"error": str(e)}), 404
+        from flask import current_app
+
+        current_app.logger.error(f"Exception in commit endpoint: {e}")
+        return jsonify({"error": "An internal error occurred."}), 404

@@ -82,7 +82,10 @@ def list_files(user_id, repo_id):
             )
         return jsonify(entries)
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        from flask import current_app
+
+        current_app.logger.error(f"Exception in list_files endpoint: {e}")
+        return jsonify({"error": "An internal error occurred."}), 400
 
 
 @files_bp.route("/<path:file_path>", methods=["GET"])
@@ -149,7 +152,10 @@ def get_file_content(user_id, repo_id, file_path):
             return jsonify({"url": download_url}), 302
         return send_file(abs_path, as_attachment=False)
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        from flask import current_app
+
+        current_app.logger.error(f"Exception in get_file_url endpoint: {e}")
+        return jsonify({"error": "An internal error occurred."}), 400
 
 
 # Secure file download endpoint (verifies token)
@@ -200,7 +206,10 @@ def download_file_secure(user_id, repo_id, file_path):
             return jsonify({"error": "File not found"}), 404
         return send_file(abs_path, as_attachment=True)
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        from flask import current_app
+
+        current_app.logger.error(f"Exception in download_file endpoint: {e}")
+        return jsonify({"error": "An internal error occurred."}), 400
 
 
 @files_bp.route("/<path:file_path>", methods=["POST"])
@@ -356,4 +365,7 @@ def post_file_content(user_id, repo_id, file_path):
             {"message": "File updated and staged", "duration": duration}
         ), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        from flask import current_app
+
+        current_app.logger.error(f"Exception in post_file_content endpoint: {e}")
+        return jsonify({"error": "An internal error occurred."}), 400

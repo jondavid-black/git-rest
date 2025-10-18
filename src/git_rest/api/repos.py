@@ -81,8 +81,13 @@ def clone_repo(user_id):
     try:
         repo = store.clone_repo(schema.name, url)
         return jsonify(repo.dict()), 201
+    except FileExistsError:
+        return jsonify({"error": f"Repository '{schema.name}' already exists."}), 400
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        from flask import current_app
+
+        current_app.logger.error(f"Exception in clone_repo endpoint: {e}")
+        return jsonify({"error": "An internal error occurred."}), 400
 
 
 # GET /users/<user_id>/repos/<repo_id>: Get repository details
@@ -116,7 +121,10 @@ def get_repo_details(user_id, repo_id):
         repo = store.get_repo(repo_id)
         return jsonify(repo.dict())
     except Exception as e:
-        return jsonify({"error": str(e)}), 404
+        from flask import current_app
+
+        current_app.logger.error(f"Exception in get_repo_details endpoint: {e}")
+        return jsonify({"error": "An internal error occurred."}), 404
 
 
 # POST /users/<user_id>/repos/<repo_id>: Switch active repository (dummy context for now)
@@ -152,5 +160,10 @@ def switch_repo(user_id, repo_id):
         return jsonify(
             {"message": f"Switched to repository '{repo_id}'", "repo": repo.dict()}
         )
+    except FileNotFoundError:
+        return jsonify({"error": f"Repository '{repo_id}' not found."}), 404
     except Exception as e:
-        return jsonify({"error": str(e)}), 404
+        from flask import current_app
+
+        current_app.logger.error(f"Exception in switch_repo endpoint: {e}")
+        return jsonify({"error": "An internal error occurred."}), 404

@@ -1,0 +1,23 @@
+openapi: 3.0.0
+info:
+  title: Exception Exposure Error Response API
+  version: 1.0.0
+paths:
+  /error:
+    get:
+      summary: Trigger an error for testing
+      responses:
+        '500':
+          description: Secure error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  code:
+                    type: string
+                  timestamp:
+                    type: string
+                    format: date-time

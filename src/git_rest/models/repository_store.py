@@ -16,7 +16,9 @@ class RepositoryStore:
         repo_path = os.path.normpath(os.path.join(self.base_dir, user, repo_id))
         # Prevent path traversal; ensure repo_path is a subpath of self.base_dir
         if not repo_path.startswith(self.base_dir + os.sep):
-            raise FileNotFoundError(f"Repository '{repo_id}' for user '{user}' not found.")
+            raise FileNotFoundError(
+                f"Repository '{repo_id}' for user '{user}' not found."
+            )
         if not os.path.isdir(os.path.join(repo_path, ".git")):
             raise FileNotFoundError(
                 f"Repository '{repo_id}' for user '{user}' not found."
@@ -215,7 +217,9 @@ class RepositoryStore:
         repo_path = os.path.normpath(os.path.join(self.base_dir, repo_id))
         # Prevent path traversal and ensure repo_path is within base_dir
         if not repo_path.startswith(self.base_dir + os.sep):
-            raise FileNotFoundError(f"Repository '{repo_id}' not found.")  # Or use PermissionError("... not allowed")
+            raise FileNotFoundError(
+                f"Repository '{repo_id}' not found."
+            )  # Or use PermissionError("... not allowed")
         if not os.path.isdir(os.path.join(repo_path, ".git")):
             raise FileNotFoundError(f"Repository '{repo_id}' not found.")
         return self._load_repo(repo_path)
