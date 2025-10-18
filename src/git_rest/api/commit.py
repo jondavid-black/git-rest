@@ -79,4 +79,7 @@ def commit_changes(user, repo):
             }
         ), 201
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        from flask import current_app
+
+        current_app.logger.error(f"Exception in commit endpoint: {e}")
+        return jsonify({"error": "An internal error occurred."}), 400

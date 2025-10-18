@@ -25,7 +25,6 @@ def register_error_handlers(app: Flask):
     @app.errorhandler(403)
     def forbidden(error):
         logger.warning(f"403 Forbidden: {error}")
-        # Optionally, import and call audit logging here
         try:
             from .audit import write_audit_log
 

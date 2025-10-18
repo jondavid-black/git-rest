@@ -102,4 +102,15 @@ def create_app():
     def healthz():
         return {"status": "ok"}
 
+    # Error simulation endpoints for BDD tests
+    @app.route("/raise500")
+    def raise500():
+        from flask import abort
+
+        abort(500)
+
+    @app.route("/raise_exception")
+    def raise_exception():
+        raise RuntimeError("Simulated unhandled exception for BDD test")
+
     return app
