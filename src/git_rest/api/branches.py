@@ -49,7 +49,10 @@ def list_branches(user_id, repo_id):
         repo = store.get_repo(repo_id)
         return jsonify([branch.dict() for branch in repo.branches])
     except Exception as e:
-        return jsonify({"error": str(e)}), 404
+        from flask import current_app
+
+        current_app.logger.error(f"Exception in commit endpoint: {e}")
+        return jsonify({"error": "An internal error occurred."}), 404
 
 
 @branches_bp.route("/", methods=["POST"])
@@ -103,7 +106,10 @@ def create_branch(user_id, repo_id):
         repo = store.get_repo(repo_id)
         return jsonify([branch.dict() for branch in repo.branches]), 201
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        from flask import current_app
+
+        current_app.logger.error(f"Exception in commit endpoint: {e}")
+        return jsonify({"error": "An internal error occurred."}), 400
 
 
 @branches_bp.route("/<branch>", methods=["POST"])
@@ -148,7 +154,10 @@ def switch_branch(user_id, repo_id, branch):
             {"message": f"Switched to branch '{branch}'", "repo": repo.dict()}
         )
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        from flask import current_app
+
+        current_app.logger.error(f"Exception in commit endpoint: {e}")
+        return jsonify({"error": "An internal error occurred."}), 400
 
 
 @branches_bp.route("/<branch>", methods=["DELETE"])
@@ -208,4 +217,7 @@ def delete_branch(user_id, repo_id, branch):
         repo = store.get_repo(repo_id)
         return jsonify([b.dict() for b in repo.branches])
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        from flask import current_app
+
+        current_app.logger.error(f"Exception in commit endpoint: {e}")
+        return jsonify({"error": "An internal error occurred."}), 400

@@ -61,4 +61,7 @@ def get_diff(user, repo):
             diff = git_repo.git.diff()
         return jsonify({"diff": diff})
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        from flask import current_app
+
+        current_app.logger.error(f"Exception in commit endpoint: {e}")
+        return jsonify({"error": "An internal error occurred."}), 400
