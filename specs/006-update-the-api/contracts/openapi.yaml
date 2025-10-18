@@ -1,0 +1,69 @@
+openapi: 3.0.3
+info:
+  title: Git REST File Content API
+  version: 1.0.0
+paths:
+  /users/{user_id}/repos/{repo_id}/files/{file_path}:
+    post:
+      summary: Update or create file content for a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  description: File content (text or base64-encoded binary)
+                type:
+                  type: string
+                  enum: [text, binary]
+                  description: File type
+                partial:
+                  type: object
+                  properties:
+                    start_line:
+                      type: integer
+                    end_line:
+                      type: integer
+                  description: Optional partial update (line range)
+      responses:
+        '200':
+          description: File updated and staged
+        '400':
+          description: Invalid request
+        '404':
+          description: File or repository not found
+        '409':
+          description: Concurrent update conflict
+    get:
+      summary: Get file content and metadata for a user
+      responses:
+        '200':
+          description: File content returned
+        '404':
+          description: File or repository not found
+  /users/{user_id}/repos/{repo_id}/commit:
+    post:
+      summary: Commit staged changes for a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: Commit message
+                author:
+                  type: string
+                  description: Author name
+      responses:
+        '200':
+          description: Changes committed
+        '400':
+          description: Invalid request
+        '404':
+          description: Repository not found
