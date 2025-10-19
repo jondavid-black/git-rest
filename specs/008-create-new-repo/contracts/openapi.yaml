@@ -1,0 +1,85 @@
+openapi: 3.0.3
+info:
+  title: git-rest Create New Repo API
+  version: 1.0.0
+paths:
+  /api/repos:
+    post:
+      summary: Create a new repository
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - description
+              properties:
+                name:
+                  type: string
+                  description: Unique repository name (per user)
+                description:
+                  type: string
+                  description: Repository description
+                readme:
+                  type: string
+                  description: Optional README.md content
+                license:
+                  type: string
+                  description: Optional open source license name (MIT, Apache-2.0, etc.)
+      responses:
+        '201':
+          description: Repository created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Repository'
+        '400':
+          description: Invalid input or duplicate repo name
+        '422':
+          description: Unsupported license or validation error
+components:
+  schemas:
+    Repository:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        owner:
+          type: string
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/File'
+        branches:
+          type: array
+          items:
+            $ref: '#/components/schemas/Branch'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        license:
+          type: string
+    File:
+      type: object
+      properties:
+        name:
+          type: string
+        path:
+          type: string
+        size:
+          type: integer
+    Branch:
+      type: object
+      properties:
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
