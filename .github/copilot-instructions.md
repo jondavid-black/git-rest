@@ -10,6 +10,7 @@ Auto-generated from all feature plans. Last updated: 2025-10-11
 - Filesystem (per-user repo directories) (004-multi-repo-testing)
 - Python 3.12+ + Flask, flasgger (005-interactive-demo-use)
 - N/A (no persistent storage required for demo) (005-interactive-demo-use)
+- Python 3.12+ + Flask (Blueprints, application factory), gitpython, pydantic (008-explicit-clone-url)
 
 ## Guidance for AI Command Execution
 - When creating a new terminal session remember to activate the Python environment:
@@ -32,9 +33,9 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.12+: Follow standard conventions
 
 ## Recent Changes
+- 008-explicit-clone-url: Added Python 3.12+ + Flask (Blueprints, application factory), gitpython, pydantic
 - 007-exception-exposure-there: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
 - 006-update-the-api: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
-- 005-interactive-demo-use: Added Python 3.12+ + Flask, flasgger
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->

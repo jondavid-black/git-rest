@@ -50,6 +50,18 @@ API_URL = "http://localhost:5000"
 DEFAULT_USER = "alice"
 
 
+# Step for POST to /users/{user_id}/repos/clone with name and url
+@when('I POST to /users/{user_id}/repos/clone with name "{name}" and url "{url}"')
+def post_repos_clone_with_name_and_url(context, user_id, name, url):
+    context.response = requests.post(
+        f"{API_URL}/users/{user_id}/repos/clone", json={"name": name, "url": url}
+    )
+    # Save the url for later origin checks
+    if not hasattr(context, "repo_urls"):
+        context.repo_urls = {}
+    context.repo_urls[name] = url
+
+
 # Generic step for POST to /users/{user_id}/repos with name and url
 @when('I POST to /users/{user_id}/repos with name "{name}" and url "{url}"')
 def post_repos_with_name_and_url(context, user_id, name, url):

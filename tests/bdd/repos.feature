@@ -11,7 +11,7 @@ Feature: Repository management
 
   Scenario: Clone a new repository
     Given the API is running
-  When I POST to /users/alice/repos with name "git-rest-test" and url "https://github.com/jondavid-black/git-rest-test.git"
+  When I POST to /users/alice/repos/clone with name "git-rest-test" and url "https://github.com/jondavid-black/git-rest-test.git"
     Then the response status should be 201
   And the response should contain "name": "git-rest-test"
 
@@ -44,7 +44,7 @@ Feature: Repository management
 
   Scenario: Query origin for git-rest-test
     Given the API is running
-    When I POST to /users/alice/repos with name "git-rest-test" and url "https://github.com/jondavid-black/git-rest-test.git"
+    When I POST to /users/alice/repos/clone with name "git-rest-test" and url "https://github.com/jondavid-black/git-rest-test.git"
     Then the response status should be 201
     When I GET /users/alice/repos/git-rest-test/origin
     Then the response status should be 200
@@ -52,7 +52,7 @@ Feature: Repository management
 
   Scenario: Query origin for git-rest-test-other
     Given the API is running
-    When I POST to /users/alice/repos with name "git-rest-test-other" and url "https://github.com/jondavid-black/git-rest-test-other.git"
+    When I POST to /users/alice/repos/clone with name "git-rest-test-other" and url "https://github.com/jondavid-black/git-rest-test-other.git"
     Then the response status should be 201
     When I GET /users/alice/repos/git-rest-test-other/origin
     Then the response status should be 200
@@ -61,8 +61,8 @@ Feature: Repository management
   Scenario: Clone two repos into the same environment and switch between them without errors
     Given the API is running
     And I have a clean environment
-    When I POST to /users/alice/repos with name "git-rest-test" and url "https://github.com/jondavid-black/git-rest-test.git"
-    And I POST to /users/alice/repos with name "git-rest-test-other" and url "https://github.com/jondavid-black/git-rest-test-other.git"
+    When I POST to /users/alice/repos/clone with name "git-rest-test" and url "https://github.com/jondavid-black/git-rest-test.git"
+    And I POST to /users/alice/repos/clone with name "git-rest-test-other" and url "https://github.com/jondavid-black/git-rest-test-other.git"
     Then both repositories "git-rest-test" and "git-rest-test-other" should exist for user "alice"
     When I POST to /users/alice/repos/git-rest-test
     And I GET /users/alice/repos/git-rest-test/status
@@ -78,9 +78,9 @@ Feature: Repository management
 
   Scenario: Name collision when cloning repository
     Given the API is running
-    When I POST to /users/alice/repos with name "git-rest-test" and url "https://github.com/jondavid-black/git-rest-test.git"
+    When I POST to /users/alice/repos/clone with name "git-rest-test" and url "https://github.com/jondavid-black/git-rest-test.git"
     Then the response status should be 201
-    When I POST to /users/alice/repos with name "git-rest-test" and url "https://github.com/jondavid-black/git-rest-test.git"
+    When I POST to /users/alice/repos/clone with name "git-rest-test" and url "https://github.com/jondavid-black/git-rest-test.git"
     Then the response status should be 400
     And the response should contain "error": "Repository 'git-rest-test' already exists."
 
@@ -92,6 +92,6 @@ Feature: Repository management
 
   Scenario: Network failure when cloning repository
     Given the API is running
-    When I POST to /users/alice/repos with name "bad-remote" and url "https://invalid.example.com/nonexistent.git"
+    When I POST to /users/alice/repos/clone with name "bad-remote" and url "https://invalid.example.com/nonexistent.git"
     Then the response status should be 400
     And the response should contain "error"

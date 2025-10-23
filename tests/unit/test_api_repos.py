@@ -46,7 +46,7 @@ def test_clone_repo_nominal(client):
         mock_get_user_store.return_value = mock_store
         mock_schema.return_value = MagicMock(name="repo1")
         payload = {"name": "repo1", "url": "https://example.com/repo.git"}
-        response = client.post("/users/testuser/repos/", json=payload)
+        response = client.post("/users/testuser/repos/clone", json=payload)
         assert response.status_code == 201
         data = response.get_json()
         assert data["name"] == "repo1"
@@ -54,7 +54,7 @@ def test_clone_repo_nominal(client):
 
 def test_clone_repo_missing_url(client):
     payload = {"name": "repo1"}
-    response = client.post("/users/testuser/repos/", json=payload)
+    response = client.post("/users/testuser/repos/clone", json=payload)
     assert response.status_code == 400
     data = response.get_json()
     assert "error" in data
@@ -70,7 +70,7 @@ def test_clone_repo_error(client):
         mock_get_user_store.return_value = mock_store
         mock_schema.return_value = MagicMock(name="repo1")
         payload = {"name": "repo1", "url": "https://example.com/repo.git"}
-        response = client.post("/users/testuser/repos/", json=payload)
+        response = client.post("/users/testuser/repos/clone", json=payload)
         assert response.status_code == 400
         data = response.get_json()
         assert "error" in data

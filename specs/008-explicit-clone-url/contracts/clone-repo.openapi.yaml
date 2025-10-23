@@ -1,0 +1,49 @@
+openapi: 3.0.3
+info:
+  title: Clone Repository API
+  version: 1.0.0
+paths:
+  /api/{user_id}/repos/clone:
+    post:
+      summary: Clone a git repository into the user's namespace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  description: Git repository URL to clone
+              required:
+                - url
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Repository cloned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  url:
+                    type: string
+                  status:
+                    type: string
+        '400':
+          description: Invalid request (e.g., malformed URL, duplicate repo)
+        '403':
+          description: Permission denied
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
