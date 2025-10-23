@@ -3,9 +3,9 @@
 
 ## Cloning a Repository
 1. Authenticate and obtain a JWT token.
-2. Send a POST to `/users/{user_id}/repos` with JSON:
+2. Send a POST to `/users/{user_id}/repos/clone` with JSON:
 	```json
-	{ "name": "my-repo", "url": "https://github.com/example/repo.git" }
+	{ "name": "my-repo", "url": "https://github.com/example/my-repo.git" }
 	```
 3. On success, you'll receive a 201 response with the new repo details.
 4. If the name already exists, you'll get a 400 error.

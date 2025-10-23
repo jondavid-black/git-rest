@@ -41,11 +41,12 @@ def list_repos(user_id):
     return jsonify([repo.dict() for repo in repos])
 
 
-@repos_bp.route("/", methods=["POST"])
+# New explicit clone endpoint
+@repos_bp.route("/clone", methods=["POST"])
 @audit_repo_action("clone_repo")
 def clone_repo(user_id):
     """
-    Clone a new repository for a user from a remote URL.
+    Clone a new repository for a user from a remote URL using explicit endpoint.
     ---
     parameters:
       - in: path

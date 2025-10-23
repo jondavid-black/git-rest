@@ -23,7 +23,7 @@ List all repositories for the user.
 **Response:**
 - 200 OK: JSON array of repository objects.
 
-### `POST /users/{user_id}/repos`
+### `POST /users/{user_id}/repos/clone`
 Clone a new repository for the user.
 
 **Request JSON:**
@@ -34,8 +34,6 @@ Clone a new repository for the user.
 }
 ```
 **Response:**
-- 201 Created: JSON object of the new repository
-- 400 Bad Request: Error message (e.g., name collision, network failure)
 
 ### `GET /users/{user_id}/repos/{repo_id}`
 Get details for a specific repository.
