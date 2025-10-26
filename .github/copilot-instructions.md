@@ -33,9 +33,9 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.12+: Follow standard conventions
 
 ## Recent Changes
+- 009-init-new-repo: Added Python 3.12+ + Flask, gitpython, pydantic
 - 008-explicit-clone-url: Added Python 3.12+ + Flask (Blueprints, application factory), gitpython, pydantic
 - 007-exception-exposure-there: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
-- 006-update-the-api: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->

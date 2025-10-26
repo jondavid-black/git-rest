@@ -119,3 +119,24 @@ def step_impl_response_should_contain_correct_origin(context, repo_name):
     assert data["origin"] == expected_url, (
         f"Expected {expected_url}, got {data['origin']}"
     )
+
+
+# Step for POST to /users/{user_id}/repos/init with name
+@when('I POST to the init endpoint for user "{user_id}" with repo name "{name}"')
+def post_init_endpoint_with_name(context, user_id, name):
+    context.response = requests.post(
+        f"{API_URL}/users/{user_id}/repos/init", json={"name": name}
+    )
+
+
+@then('the response should contain a repository named "{repo_name}"')
+def then_response_should_contain_repo_named(context, repo_name):
+    data = context.response.json()
+    # Accepts both list of dicts or dicts with 'name' key
+    if isinstance(data, list):
+        names = [r["name"] for r in data if "name" in r]
+        assert repo_name in names, f"Expected repo '{repo_name}' in {names}"
+    elif isinstance(data, dict):
+        assert data.get("name") == repo_name, f"Expected repo '{repo_name}' in {data}"
+    else:
+        raise AssertionError(f"Unexpected response format: {data}")

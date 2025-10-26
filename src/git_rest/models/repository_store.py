@@ -6,6 +6,32 @@ from .repository import Branch, Remote, Repository, RepoStatus
 
 
 class RepositoryStore:
+    def init_repo(self, name: str) -> Repository:
+        """
+        Initialize a new git repository in the user's repo directory.
+        """
+        import re
+
+        if not re.match(r"^[A-Za-z0-9_.-]+$", name):
+            raise ValueError(
+                "Repository name must be alphanumeric, dash, dot, or underscore"
+            )
+        repo_path = os.path.join(self.base_dir, name)
+        if os.path.exists(repo_path):
+            raise FileExistsError(f"Repository '{name}' already exists.")
+        try:
+            os.makedirs(repo_path, exist_ok=False)
+            git.Repo.init(repo_path)
+            # Optionally, create an initial README or .gitignore here if desired
+            return self._load_repo(repo_path)
+        except Exception as e:
+            # Clean up if partial directory created
+            if os.path.exists(repo_path):
+                import shutil
+
+                shutil.rmtree(repo_path, ignore_errors=True)
+            raise OSError(f"Failed to initialize repository: {e}") from e
+
     def _load_git_repo(self, repo_path: str):
         return git.Repo(repo_path)
 

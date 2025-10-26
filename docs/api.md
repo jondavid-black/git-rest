@@ -1,4 +1,3 @@
-
 # API Reference
 
 
@@ -204,3 +203,31 @@ Download a file securely using a signed URL. Requires `expires` and `token` quer
 Two users can create, modify, and delete repositories, branches, and files at the same time. Each user's changes are isolated and do not affect other users.
 
 See the OpenAPI spec for full request/response details and additional endpoints.
+
+### `POST /users/{user_id}/repos/init`
+Initialize a new, empty repository for the user (equivalent to `git init`).
+
+**Request JSON:**
+```
+{
+  "name": "repo-name"
+}
+```
+**Response:**
+- 201 Created: `{ "url": "/users/{user_id}/repos/{repo-name}" }`
+- 400 Bad Request: Invalid input (e.g., invalid repo name)
+- 404 Not Found: User not found
+- 409 Conflict: Repository already exists
+- 500 Internal Server Error: Storage unavailable or internal error
+
+**Example:**
+```
+POST /users/alice/repos/init
+{
+  "name": "my-new-repo"
+}
+Response: 201 Created
+{
+  "url": "/users/alice/repos/my-new-repo"
+}
+```
