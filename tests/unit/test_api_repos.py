@@ -243,15 +243,23 @@ def test_init_repo_concurrent(client):
         results = queue.Queue()
 
         def init_repo():
-            try:
-                mock_store.init_repo.side_effect = FileExistsError(
-                    "Repository already exists."
-                )
-                payload = {"name": "repo1"}
-                response = client.post("/users/testuser/repos/init", json=payload)
-                results.put(response.status_code)
-            except Exception as e:
-                results.put(e)
+            from flask import Flask
+
+            app = Flask(__name__)
+            app.register_blueprint(repos_module.repos_bp)
+            app.config["TESTING"] = True
+            with app.test_client() as thread_client:
+                try:
+                    mock_store.init_repo.side_effect = FileExistsError(
+                        "Repository already exists."
+                    )
+                    payload = {"name": "repo1"}
+                    response = thread_client.post(
+                        "/users/testuser/repos/init", json=payload
+                    )
+                    results.put(response.status_code)
+                except Exception as e:
+                    results.put(e)
 
         mock_get_user_store.return_value = mock_store
         mock_schema.return_value = MagicMock(name="repo1")

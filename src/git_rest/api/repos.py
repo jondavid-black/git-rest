@@ -41,8 +41,6 @@ def list_repos(user_id):
     return jsonify([repo.dict() for repo in repos])
 
 
-
-
 @repos_bp.route("/init", methods=["POST"])
 @audit_repo_action("init_repo")
 def init_repo(user_id):
@@ -87,6 +85,7 @@ def init_repo(user_id):
         schema = RepoNameSchema(**data)
     except Exception as e:
         from flask import current_app
+
         current_app.logger.error(f"Validation error in init_repo: {e}")
         return jsonify({"error": "Invalid input or error occurred."}), 400
 
@@ -98,14 +97,17 @@ def init_repo(user_id):
         return jsonify({"error": f"Repository '{schema.name}' already exists."}), 409
     except ValueError as e:
         from flask import current_app
+
         current_app.logger.error(f"ValueError in init_repo: {e}")
         return jsonify({"error": "Invalid input or error occurred."}), 400
     except OSError as e:
         from flask import current_app
+
         current_app.logger.error(f"Storage unavailable: {e}")
         return jsonify({"error": "Storage error occurred."}), 500
     except Exception as e:
         from flask import current_app
+
         current_app.logger.error(f"Exception in init_repo endpoint: {e}")
         return jsonify({"error": "An internal error occurred."}), 500
 
