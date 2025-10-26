@@ -41,6 +41,8 @@ def list_repos(user_id):
     return jsonify([repo.dict() for repo in repos])
 
 
+
+
 @repos_bp.route("/init", methods=["POST"])
 @audit_repo_action("init_repo")
 def init_repo(user_id):
@@ -79,11 +81,15 @@ def init_repo(user_id):
         store = get_user_store(user_id)
     except Exception:
         return jsonify({"error": "User not found"}), 404
+
     data = request.get_json() or {}
     try:
         schema = RepoNameSchema(**data)
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        from flask import current_app
+        current_app.logger.error(f"Validation error in init_repo: {e}")
+        return jsonify({"error": "Invalid input or error occurred."}), 400
+
     try:
         store.init_repo(schema.name)
         url = f"/users/{user_id}/repos/{schema.name}"
@@ -91,12 +97,15 @@ def init_repo(user_id):
     except FileExistsError:
         return jsonify({"error": f"Repository '{schema.name}' already exists."}), 409
     except ValueError as e:
-        return jsonify({"error": str(e)}), 400
+        from flask import current_app
+        current_app.logger.error(f"ValueError in init_repo: {e}")
+        return jsonify({"error": "Invalid input or error occurred."}), 400
     except OSError as e:
-        return jsonify({"error": f"Storage unavailable: {e}"}), 500
+        from flask import current_app
+        current_app.logger.error(f"Storage unavailable: {e}")
+        return jsonify({"error": "Storage error occurred."}), 500
     except Exception as e:
         from flask import current_app
-
         current_app.logger.error(f"Exception in init_repo endpoint: {e}")
         return jsonify({"error": "An internal error occurred."}), 500
 

@@ -80,9 +80,9 @@ The general workflow for starting new work should use the Speckit workflow in th
 - `/speckit.specify <Your high level requirements here>`
 - `/speckit.clarify`
 - `/speckit.plan`
+- `/speckit.checklist`
 - `/speckit.tasks`
 - `/speckit.analyze`
-- `/speckit.checklist`
 - `Review the checklists.  Mark all items that have been completed.  Ask any questions you need to mark the others.`
 
 Completing these commands should establish a detailed plan to guide GitHub Copilot through the implementation phases.
