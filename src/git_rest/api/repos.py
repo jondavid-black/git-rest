@@ -41,6 +41,66 @@ def list_repos(user_id):
     return jsonify([repo.dict() for repo in repos])
 
 
+@repos_bp.route("/init", methods=["POST"])
+@audit_repo_action("init_repo")
+def init_repo(user_id):
+    """
+    Initialize a new repository for a user (git init).
+    ---
+    parameters:
+      - in: path
+        name: user_id
+        required: true
+        schema:
+          type: string
+        description: The user identifier.
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The name for the new repository.
+    responses:
+      201:
+        description: Repository initialized successfully.
+      400:
+        description: Invalid input or error occurred.
+      404:
+        description: User not found.
+      409:
+        description: Repository already exists.
+      500:
+        description: Storage unavailable or internal error.
+    """
+    try:
+        store = get_user_store(user_id)
+    except Exception:
+        return jsonify({"error": "User not found"}), 404
+    data = request.get_json() or {}
+    try:
+        schema = RepoNameSchema(**data)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+    try:
+        store.init_repo(schema.name)
+        url = f"/users/{user_id}/repos/{schema.name}"
+        return jsonify({"url": url}), 201
+    except FileExistsError:
+        return jsonify({"error": f"Repository '{schema.name}' already exists."}), 409
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+    except OSError as e:
+        return jsonify({"error": f"Storage unavailable: {e}"}), 500
+    except Exception as e:
+        from flask import current_app
+
+        current_app.logger.error(f"Exception in init_repo endpoint: {e}")
+        return jsonify({"error": "An internal error occurred."}), 500
+
+
 # New explicit clone endpoint
 @repos_bp.route("/clone", methods=["POST"])
 @audit_repo_action("clone_repo")

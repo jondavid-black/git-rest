@@ -1,4 +1,3 @@
-
 # How-To Guides
 
 ## Cloning a Repository
@@ -18,6 +17,24 @@
 ## Querying Repository Origin
 1. GET `/users/{user_id}/repos/{repo_id}/origin` to retrieve the remote/origin URL for a repo.
 2. Use this to verify the source of any managed repository.
+
+## Initializing a New Repository
+1. Authenticate and obtain a JWT token.
+2. Send a POST to `/users/{user_id}/repos/init` with JSON:
+    ```json
+    { "name": "my-new-repo" }
+    ```
+3. On success, you'll receive a 201 response with the new repo URL.
+4. If the name is invalid or already exists, you'll get a 400 or 409 error.
+
+Example:
+```sh
+curl -X POST \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  http://localhost:5000/users/alice/repos/init \
+  -d '{"name": "my-new-repo"}'
+```
 
 ## Handling Errors
 - **Name collision**: 400 error if you try to clone a repo with an existing name.

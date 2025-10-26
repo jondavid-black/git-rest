@@ -1,4 +1,3 @@
-
 # Getting Started
 
 Welcome to **git-rest**! This guide will help you get up and running with the multi-repo REST API for Git.
@@ -75,6 +74,26 @@ docker run -e GIT_REST_SECRET_KEY=your-secret-key -e GIT_REST_WORKDIR=/data/repo
 ---
 
 For advanced production, see Docker and Nginx setup in the documentation.
+
+## Creating a New Repository
+
+To create a new, empty repository for a user (equivalent to `git init`):
+
+```sh
+curl -X POST \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  http://localhost:5000/users/alice/repos/init \
+  -d '{"name": "my-new-repo"}'
+```
+
+- On success, you'll receive:
+  ```json
+  { "url": "/users/alice/repos/my-new-repo" }
+  ```
+- If the name is invalid or already exists, you'll get a clear error message.
+
+See [API Reference](api.md#post-usersuser_idreposinit) for full details.
 
 ## Next Steps
 - See the [How-To Guides](how-to.md) for common workflows.
